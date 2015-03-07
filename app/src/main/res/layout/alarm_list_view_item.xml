@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    android:layout_centerInParent="true"
+    android:paddingTop="7dp"
+    android:paddingBottom="7dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+   >
+
+    <LinearLayout
+        android:id="@+id/back"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@android:color/black"
+        android:gravity="right"
+        android:tag="back">
+
+        <Button
+            android:id="@+id/swipe_button1"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:background="@drawable/notifications_circle_selected" />
+
+        <Button
+            android:id="@+id/swipe_button2"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:background="@drawable/notifications_circle_selected" />
+
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/front"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@android:color/black"
+        android:orientation="vertical"
+        android:tag="front">
+
+        <TextView
+            android:id="@+id/hour"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_gravity="center"
+            android:layout_centerInParent="true"
+            android:gravity="center_vertical"
+            android:textColor="#CCB69B" />
+
+        <EditText
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="@android:color/transparent"
+            android:layout_gravity="center"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:text="NEW ALARM"
+            android:textColor="#CCB69B"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:textColor="#CCB69B" />
+
+        <ToggleButton
+            android:id="@+id/activeAlarm"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:background="@layout/check"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:textOff=""
+            android:textOn="" />
+
+    </RelativeLayout>
+</RelativeLayout>
