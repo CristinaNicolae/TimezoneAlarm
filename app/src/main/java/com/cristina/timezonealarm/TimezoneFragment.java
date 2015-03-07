@@ -1,10 +1,16 @@
 package com.cristina.timezonealarm;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.ShareActionProvider;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -47,10 +53,13 @@ public class TimezoneFragment extends  Fragment implements AnalogClock.AnalogClo
     RelativeLayout rlRight;
 
 
+    private ShareActionProvider mShareActionProvider;
+
    // private OnTimeZonesFragmentInteractionListener mListener;
 
 
         public TimezoneFragment() {
+            setHasOptionsMenu(true);
         }
 
         @Override
@@ -94,13 +103,15 @@ public class TimezoneFragment extends  Fragment implements AnalogClock.AnalogClo
             analogClock1.setAnalogClockListener(this);
             analogClock2.setAnalogClockListener(this);
 
-//            alarmImageView = (ImageView) rootView.findViewById(R.id.alarmButton);
-//            alarmImageView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    mListener.alarmsSelected();
-//                }
-//            });
+
+            analogClock1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent myIntent = new Intent(getActivity(), AlarmsActivity.class);
+                  // myIntent.putExtra("key", value); //Optional parameters
+                    startActivity(myIntent);
+                }
+            });
 
 
 
@@ -122,12 +133,32 @@ public class TimezoneFragment extends  Fragment implements AnalogClock.AnalogClo
 
     }
 
-//    @Override
-//    public void setUserVisibleHint(boolean isVisibleToUser) {
-//        super.setUserVisibleHint(isVisibleToUser);
-//        if(isVisibleToUser) {
-//            Activity a = getActivity();
-//            if(a != null) a.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
-//        }
-//    }
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.menu_main, menu);
+
+        // Retrieve the share menu item
+        MenuItem menuItem = menu.findItem(R.id.action_share);
+
+        // Get the provider and hold onto it to set/change the share intent.
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
+
+        if (mShareActionProvider != null ) {
+            mShareActionProvider.setShareIntent(createShareIntent());
+        } else {
+            // nada
+        }
+    }
+
+
+    private Intent createShareIntent() {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "I am using this amazing app!");
+        return shareIntent;
+    }
+
+
 }

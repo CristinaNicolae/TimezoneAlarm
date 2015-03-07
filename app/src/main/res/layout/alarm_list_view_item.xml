@@ -18,17 +18,13 @@
         android:gravity="right"
         android:tag="back">
 
-        <Button
-            android:id="@+id/swipe_button1"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:background="@drawable/notifications_circle_selected" />
 
         <Button
             android:id="@+id/swipe_button2"
             android:layout_width="18dp"
             android:layout_height="18dp"
-            android:background="@drawable/notifications_circle_selected" />
+            android:background="@drawable/notifications_circle_selected"
+            android:text="X"/>
 
 
     </LinearLayout>
