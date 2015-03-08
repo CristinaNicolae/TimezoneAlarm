@@ -1,9 +1,13 @@
 package com.cristina.timezonealarm;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -17,6 +21,17 @@ public class MainActivity extends ActionBarActivity {
                     .add(R.id.container, new TimezoneFragment())
                     .commit();
         }
+
+        int i = 10;
+        Intent intent = new Intent(this, MyBroadcastReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this.getApplicationContext(), 234324243, intent, 0);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
+                + (i * 1000), pendingIntent);
+        Toast.makeText(this, "Alarm set in " + i + " seconds",
+                Toast.LENGTH_LONG).show();
     }
 
 

@@ -16,7 +16,7 @@
         android:id="@+id/topLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="16"
+        android:layout_weight="10"
         android:paddingBottom="-20dp"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
@@ -86,7 +86,7 @@
         android:id="@+id/listViewLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="33"
+        android:layout_weight="39"
         android:orientation="vertical">
 
         <ImageView
