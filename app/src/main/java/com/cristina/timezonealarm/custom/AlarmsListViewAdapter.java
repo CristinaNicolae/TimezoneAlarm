@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -78,8 +79,8 @@ public class AlarmsListViewAdapter extends BaseAdapter {
 
         TextView clock = (TextView)  rowView.findViewById(R.id.hour);
         TextView titleTextView = (TextView) rowView.findViewById(R.id.titleTextView);
-        ToggleButton toggleButton = (ToggleButton) rowView.findViewById(R.id.activeAlarm);
-        Alarm alarm = (Alarm) data.get(position);
+        final ToggleButton toggleButton = (ToggleButton) rowView.findViewById(R.id.activeAlarm);
+        final Alarm alarm = (Alarm) data.get(position);
         String ampmValue;
         if (alarm.timeOfDay == 1) ampmValue= "PM";
         else ampmValue = "AM";
@@ -95,6 +96,20 @@ public class AlarmsListViewAdapter extends BaseAdapter {
         }
         else
             toggleButton.setChecked(false);
+
+        toggleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(toggleButton.isChecked())
+                {
+                    alarm.active=true;
+                }
+                else
+                {
+                    alarm.active=false;
+                }
+            }
+        });
 
         return rowView;
     }

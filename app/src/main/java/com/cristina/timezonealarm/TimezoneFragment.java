@@ -27,6 +27,7 @@ import java.util.TimeZone;
 public class TimezoneFragment extends  Fragment implements AnalogClock.AnalogClockListener{
 
 
+    android.widget.AnalogClock localAnalogClock;
     AnalogClock analogClock1;
     AnalogClock analogClock2;
 
@@ -75,6 +76,7 @@ public class TimezoneFragment extends  Fragment implements AnalogClock.AnalogClo
 
             analogClock1 = (AnalogClock) rootView.findViewById(R.id.analogClockTimeZone1);
             analogClock2 = (AnalogClock) rootView.findViewById(R.id.analogClockTimeZone2);
+            localAnalogClock = (android.widget.AnalogClock) rootView.findViewById(R.id.analogClockCenter);
 
             plusLeft.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -104,16 +106,33 @@ public class TimezoneFragment extends  Fragment implements AnalogClock.AnalogClo
             analogClock2.setAnalogClockListener(this);
 
 
-            analogClock1.setOnClickListener(new View.OnClickListener() {
+            localAnalogClock.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent myIntent = new Intent(getActivity(), AlarmsActivity.class);
-                  // myIntent.putExtra("key", value); //Optional parameters
+                    myIntent.putExtra("timezone", "local");
                     startActivity(myIntent);
                 }
             });
 
 
+            analogClock1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent myIntent = new Intent(getActivity(), AlarmsActivity.class);
+                    myIntent.putExtra("timezone", timeZone1);
+                    startActivity(myIntent);
+                }
+            });
+
+            analogClock2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent myIntent = new Intent(getActivity(), AlarmsActivity.class);
+                    myIntent.putExtra("timezone", timeZone2);
+                    startActivity(myIntent);
+                }
+            });
 
             return rootView;
         }

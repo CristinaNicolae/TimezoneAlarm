@@ -4,12 +4,16 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -24,16 +28,18 @@ public class MainActivity extends ActionBarActivity {
                     .commit();
         }
 
-        int i = 10;
         Intent intent = new Intent(this, MyBroadcastReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                this.getApplicationContext(), 234324243, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
 
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
-                + (i * 1000), pendingIntent);
-        Toast.makeText(this, "Alarm set in " + i + " seconds",
-                Toast.LENGTH_LONG).show();
+        Calendar cur_cal = new GregorianCalendar();
+        cur_cal.setTimeInMillis(System.currentTimeMillis());//set the current time and date for this calendar
+
+        Calendar timeOff9 = Calendar.getInstance();
+        timeOff9.set(Calendar.HOUR_OF_DAY, 18);
+        timeOff9.set(Calendar.MINUTE, 53);
+        timeOff9.set(Calendar.SECOND, 0);
+        AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarm.set(AlarmManager.RTC_WAKEUP, timeOff9.getTimeInMillis(), pendingIntent);
 
     }
 

@@ -37,7 +37,6 @@ public class AlarmsFragment extends Fragment {
     public AlarmsFragment() {
     }
 
-
     ImageView needle;
     ImageView back;
     PointF touchPoint;
