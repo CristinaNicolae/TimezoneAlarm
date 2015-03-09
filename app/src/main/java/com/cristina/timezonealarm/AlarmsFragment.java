@@ -27,6 +27,7 @@ import android.widget.ToggleButton;
 
 import com.cristina.timezonealarm.custom.Alarm;
 import com.cristina.timezonealarm.custom.AlarmsListViewAdapter;
+import com.cristina.timezonealarm.swipelistview.SwipeDismissListViewTouchListener;
 
 import java.util.ArrayList;
 
@@ -46,7 +47,7 @@ public class AlarmsFragment extends Fragment {
     Button addNewAlarm;
     Button setAlarm;
     boolean isTouchable = false;
-    ListView alarmListView ;
+    ListView alarmListView;
     AlarmsListViewAdapter listViewAdapter;
     ArrayList<Alarm> alarmArrayList = new ArrayList<Alarm>();
     ImageView upImage;
@@ -60,7 +61,6 @@ public class AlarmsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_alarms, container, false);
 
 
-
         needle = (ImageView) rootView.findViewById(R.id.needle);
         back = (ImageView) rootView.findViewById(R.id.back);
         time = (TextView) rootView.findViewById(R.id.timeTextView);
@@ -68,13 +68,36 @@ public class AlarmsFragment extends Fragment {
         setAlarm = (Button) rootView.findViewById(R.id.setAlarm);
         alarmListView = (ListView) rootView.findViewById(R.id.alarmListView);
 
+        SwipeDismissListViewTouchListener touchListener =
+                new SwipeDismissListViewTouchListener(
+                        alarmListView,
+                        new SwipeDismissListViewTouchListener.DismissCallbacks() {
 
+                            @Override
+                            public boolean canDismiss(int position) {
+                                return true;
+                            }
+
+                            @Override
+                            public void onDismiss(ListView listView, int[] reverseSortedPositions) {
+                                for (int position : reverseSortedPositions) {
+                                    listViewAdapter.remove(position);
+                                }
+                                listViewAdapter.notifyDataSetChanged();
+                                if (alarmArrayList.size() == 3)
+                                    downImage.setVisibility(View.VISIBLE);
+                                else downImage.setVisibility(View.INVISIBLE);
+                            }
+                        });
+        alarmListView.setOnTouchListener(touchListener);
+
+        alarmListView.setOnScrollListener(touchListener.makeScrollListener());
 
 
         Resources res = getResources();
         listViewAdapter = new AlarmsListViewAdapter(getActivity(), alarmArrayList, res, R.layout.alarm_list_view_item);
         alarmListView.setAdapter(listViewAdapter);
-        upImage = (ImageView)  rootView.findViewById(R.id.upImage);
+        upImage = (ImageView) rootView.findViewById(R.id.upImage);
         downImage = (ImageView) rootView.findViewById(R.id.downImage);
 
         setAlarm.setOnClickListener(new View.OnClickListener() {
@@ -87,14 +110,14 @@ public class AlarmsFragment extends Fragment {
             public void onClick(View v) {
                 listViewAdapter.addElement(alarm);
                 listViewAdapter.notifyDataSetChanged();
-                if (alarmArrayList.size() ==4)
+                if (alarmArrayList.size() == 4)
                     downImage.setVisibility(View.VISIBLE);
                 else downImage.setVisibility(View.INVISIBLE);
-                alarmListView.post( new Runnable() {
+                alarmListView.post(new Runnable() {
                     @Override
                     public void run() {
                         View rowView = alarmListView.getChildAt(0);
-                        editText = (EditText ) rowView.findViewById(R.id.title);
+                        editText = (EditText) rowView.findViewById(R.id.title);
                         titleTextView = (TextView) rowView.findViewById(R.id.titleTextView);
                         toggleButton = (ToggleButton) rowView.findViewById(R.id.activeAlarm);
 
@@ -110,7 +133,7 @@ public class AlarmsFragment extends Fragment {
                                 if (actionId == EditorInfo.IME_ACTION_DONE) {
 
                                     alarm.title = editText.getText().toString();
-                                    alarm.active=true;
+                                    alarm.active = true;
                                     editText.setVisibility(View.GONE);
                                     imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
                                     titleTextView.setText(alarm.title);
@@ -128,15 +151,12 @@ public class AlarmsFragment extends Fragment {
 
 
                 needle.setVisibility(View.INVISIBLE);
-                isTouchable=false;
+                isTouchable = false;
                 addNewAlarm.setVisibility(View.VISIBLE);
-                if(alarmArrayList.size() >= 5)
-                {
+                if (alarmArrayList.size() >= 5) {
                     addNewAlarm.setEnabled(false);
                     addNewAlarm.setTextColor(Color.DKGRAY);
-                }
-                else
-                {
+                } else {
                     addNewAlarm.setEnabled(true);
                     addNewAlarm.setTextColor(getActivity().getApplicationContext().getResources().getColor(R.color.ThemeYellow));
                 }
@@ -154,9 +174,9 @@ public class AlarmsFragment extends Fragment {
                 needle.setPivotX(back.getWidth() / 2);
                 needle.setPivotY(back.getHeight() / 2);
                 needle.setRotation(0);
-                alarm = new Alarm(12, 0, 0,  -1, "",  false);
-                time.setText(String.format("%02d", alarm.numberOfHours) + ":" + String.format("%02d", alarm.numberOfMinutes)  + "  PM");
-                isTouchable= true;
+                alarm = new Alarm(12, 0, 0, -1, "", false);
+                time.setText(String.format("%02d", alarm.numberOfHours) + ":" + String.format("%02d", alarm.numberOfMinutes) + "  PM");
+                isTouchable = true;
                 addNewAlarm.setVisibility(View.INVISIBLE);
                 setAlarm.setVisibility(View.VISIBLE);
 
@@ -167,8 +187,7 @@ public class AlarmsFragment extends Fragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
-                if(isTouchable)
-                {
+                if (isTouchable) {
                     final float centerXOfImageOnScreen = back.getWidth() / 2;
                     final float centerYOfImageOnScreen = back.getHeight() / 2;
 
@@ -197,36 +216,29 @@ public class AlarmsFragment extends Fragment {
                     needle.setPivotY(back.getHeight() / 2);
                     needle.setRotation(angle);
 
-                    if (angle == 0)
-                    {
+                    if (angle == 0) {
                         angle = 360;
                     }
 
-                    if (Math.abs(alarm.angle - angle)>180)
-                    {
-                        if (angle<alarm.angle)
-                        {
-                            if(alarm.angle -Math.abs(alarm.angle - angle) < 0.0)
-                            {
+                    if (Math.abs(alarm.angle - angle) > 180) {
+                        if (angle < alarm.angle) {
+                            if (alarm.angle - Math.abs(alarm.angle - angle) < 0.0) {
                                 alarm.timeOfDay = -alarm.timeOfDay;
                             }
                         }
 
-                        if (angle>alarm.angle)
-                        {
-                            if(alarm.angle - Math.abs(alarm.angle - angle) < -180 *2.0)
-                            {
+                        if (angle > alarm.angle) {
+                            if (alarm.angle - Math.abs(alarm.angle - angle) < -180 * 2.0) {
                                 alarm.timeOfDay = -alarm.timeOfDay;
                             }
                         }
                     }
 
-                    int numberOfMinutes = (int) ((360+angle) * 2);
-                    int numberOfHours = numberOfMinutes /60;
-                    numberOfMinutes = numberOfMinutes - 60* numberOfHours;
+                    int numberOfMinutes = (int) ((360 + angle) * 2);
+                    int numberOfHours = numberOfMinutes / 60;
+                    numberOfMinutes = numberOfMinutes - 60 * numberOfHours;
 
-                    if (numberOfHours ==0)
-                    {
+                    if (numberOfHours == 0) {
                         numberOfHours = 12;
                     }
 
@@ -235,11 +247,11 @@ public class AlarmsFragment extends Fragment {
                     alarm.angle = angle;
 
                     String ampmValue;
-                    if (alarm.timeOfDay == 1) ampmValue= "PM";
+                    if (alarm.timeOfDay == 1) ampmValue = "PM";
                     else ampmValue = "AM";
 
 
-                    time.setText(String.format("%02d", numberOfHours) + ":" + String.format("%02d", numberOfMinutes)  + " " + ampmValue);
+                    time.setText(String.format("%02d", numberOfHours) + ":" + String.format("%02d", numberOfMinutes) + " " + ampmValue);
                 }
 
                 return true;
@@ -252,23 +264,19 @@ public class AlarmsFragment extends Fragment {
 //                Log.d("first visible", String.valueOf(alarmListView.getFirstVisiblePosition()));
 //                Log.d("last visible", String.valueOf(alarmListView.getLastVisiblePosition()));
 //                Log.d("size", String.valueOf(alarmArrayList.size()-1));
-                if(alarmListView.getFirstVisiblePosition() == 0 && alarmListView.getLastVisiblePosition() == alarmArrayList.size()-1 )
-                {
+                if (alarmListView.getFirstVisiblePosition() == 0 && alarmListView.getLastVisiblePosition() == alarmArrayList.size() - 1) {
                     upImage.setVisibility(View.INVISIBLE);
                     downImage.setVisibility(View.INVISIBLE);
                 }
-                if(alarmListView.getFirstVisiblePosition() == 0 && alarmListView.getLastVisiblePosition() != alarmArrayList.size()-1)
-                {
+                if (alarmListView.getFirstVisiblePosition() == 0 && alarmListView.getLastVisiblePosition() != alarmArrayList.size() - 1) {
                     upImage.setVisibility(View.INVISIBLE);
                     downImage.setVisibility(View.VISIBLE);
                 }
-                if(alarmListView.getFirstVisiblePosition() != 0 && alarmListView.getLastVisiblePosition() != alarmArrayList.size()-1)
-                {
+                if (alarmListView.getFirstVisiblePosition() != 0 && alarmListView.getLastVisiblePosition() != alarmArrayList.size() - 1) {
                     upImage.setVisibility(View.VISIBLE);
                     downImage.setVisibility(View.VISIBLE);
                 }
-                if(alarmListView.getFirstVisiblePosition() != 0 && alarmListView.getLastVisiblePosition() == alarmArrayList.size()-1)
-                {
+                if (alarmListView.getFirstVisiblePosition() != 0 && alarmListView.getLastVisiblePosition() == alarmArrayList.size() - 1) {
                     upImage.setVisibility(View.VISIBLE);
                     downImage.setVisibility(View.INVISIBLE);
                 }
@@ -280,9 +288,6 @@ public class AlarmsFragment extends Fragment {
 
             }
         });
-
-
-
 
 
         return rootView;
