@@ -10,24 +10,6 @@
     android:paddingRight="10dp"
    >
 
-    <LinearLayout
-        android:id="@+id/back"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@android:color/black"
-        android:gravity="right"
-        android:tag="back">
-
-
-        <Button
-            android:id="@+id/swipe_button2"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:background="@drawable/notifications_circle_selected"
-            android:text="X"/>
-
-
-    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/front"

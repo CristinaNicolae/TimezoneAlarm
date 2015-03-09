@@ -21,13 +21,12 @@ import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.cristina.timezonealarm.custom.Alarm;
 import com.cristina.timezonealarm.custom.AlarmsListViewAdapter;
-import com.cristina.timezonealarm.swipelistview.BaseSwipeListViewListener;
-import com.cristina.timezonealarm.swipelistview.SwipeListView;
 
 import java.util.ArrayList;
 
@@ -47,7 +46,7 @@ public class AlarmsFragment extends Fragment {
     Button addNewAlarm;
     Button setAlarm;
     boolean isTouchable = false;
-    SwipeListView alarmListView ;
+    ListView alarmListView ;
     AlarmsListViewAdapter listViewAdapter;
     ArrayList<Alarm> alarmArrayList = new ArrayList<Alarm>();
     ImageView upImage;
@@ -67,39 +66,9 @@ public class AlarmsFragment extends Fragment {
         time = (TextView) rootView.findViewById(R.id.timeTextView);
         addNewAlarm = (Button) rootView.findViewById(R.id.addNewAlarm);
         setAlarm = (Button) rootView.findViewById(R.id.setAlarm);
-        alarmListView = (SwipeListView) rootView.findViewById(R.id.alarmListView);
-
-        alarmListView.setSwipeListViewListener(new BaseSwipeListViewListener() {
-            @Override
-            public void onOpened(final int position, boolean toRight)
-            {
-                View rowView = alarmListView.getChildAt(position);
-                Button buttonDelete= (Button) rowView.findViewById(R.id.swipe_button2);
-                buttonDelete.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        listViewAdapter.remove(position);
-                        listViewAdapter.notifyDataSetChanged();
-                        if(alarmArrayList.size() == 4)
-                        {
-                            downImage.setVisibility(View.VISIBLE);
-                        }
-                        else downImage.setVisibility(View.INVISIBLE);
-                        if(alarmArrayList.size() < 5)
-                        {
-                            addNewAlarm.setEnabled(true);
-                            addNewAlarm.setTextColor(getActivity().getApplicationContext().getResources().getColor(R.color.ThemeYellow));
-                        }
-
-                    }
-                });
-
-            }
+        alarmListView = (ListView) rootView.findViewById(R.id.alarmListView);
 
 
-
-        });
 
 
         Resources res = getResources();
