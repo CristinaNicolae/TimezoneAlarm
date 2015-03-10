@@ -168,6 +168,8 @@ public class AlarmsFragment extends Fragment implements
                                     listViewAdapter.updateElement(alarm);
                                     toggleButton.setChecked(true);
 
+                                    Intent intent = getActivity().getIntent();
+
                                     ContentValues values = new ContentValues();
                                     values.put(AlarmsTable.COLUMN_HOUR, alarm.numberOfHours);
                                     values.put(AlarmsTable.COLUMN_MINUTE, alarm.numberOfMinutes);
@@ -175,7 +177,7 @@ public class AlarmsFragment extends Fragment implements
                                     values.put(AlarmsTable.COLUMN_TIMEOFDAY, alarm.timeOfDay);
                                     values.put(AlarmsTable.COLUMN_TITLE, alarm.title);
                                     values.put(AlarmsTable.COLUMN_ACTIVE, alarm.active);
-                                    values.put(AlarmsTable.COLUMN_TIMEZONEID,1);
+                                    values.put(AlarmsTable.COLUMN_TIMEZONEID,intent.getStringExtra("timezone"));
 
 
 //                                    alarmUri = getActivity().getContentResolver().insert(AlarmsProvider.CONTENT_URI, values);

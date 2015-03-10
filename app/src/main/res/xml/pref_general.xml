@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:key="@string/pref_tz1_key"
+        android:title="@string/pref_tz1_label"
+        android:summary="Choose your first Timezone."
+        android:entries="@array/timezonesList"
+        android:entryValues="@array/timezonesList"
+        android:defaultValue="@string/pref_tz1_default"
+        />
+
+    <ListPreference
+        android:key="@string/pref_tz2_key"
+        android:title="@string/pref_tz2_label"
+        android:summary="Choose your second Timezone."
+        android:entries="@array/timezonesList"
+        android:entryValues="@array/timezonesList"
+        android:defaultValue="@string/pref_tz2_default"
+        />
+
+
+
+
+</PreferenceScreen>

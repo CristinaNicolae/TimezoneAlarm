@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cristina.timezonealarm" >
 
-    <uses-permission android:name="android.permission.VIBRATE"></uses-permission>
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -13,22 +14,39 @@
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:windowSoftInputMode="adjustPan"
             android:name=".AlarmsActivity"
-            android:label="@string/title_activity_alarms" >
+            android:label="@string/title_activity_alarms"
+            android:windowSoftInputMode="adjustPan" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+
+        <activity
+            android:name=".SettingsActivity"
+            android:label="Settings"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.cristina.timezonealarm.MainActivity" />
+        </activity>
+
         <provider
             android:name=".data.AlarmsProvider"
             android:authorities="com.cristina.timezonealarm" >
         </provider>
-        <receiver android:process=":remote" android:name="MyBroadcastReceiver"></receiver>
+
+        <receiver
+            android:name=".MyBroadcastReceiver"
+            android:process=":remote" />
+
+
+
     </application>
 
 </manifest>

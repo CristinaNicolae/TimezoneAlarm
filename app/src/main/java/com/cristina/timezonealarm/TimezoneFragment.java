@@ -6,9 +6,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
@@ -41,8 +43,8 @@ import java.util.concurrent.TimeUnit;
 
 
 public class TimezoneFragment extends Fragment implements
-       AnalogClock.AnalogClockListener,
-        AdapterView.OnItemSelectedListener {
+       AnalogClock.AnalogClockListener
+      {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -75,7 +77,7 @@ public class TimezoneFragment extends Fragment implements
     AnalogClock analogClockLeft;
    AnalogClock analogClockRight;
     TimeZone localTZ;
-    Spinner timeZoneSpinner;
+   // Spinner timeZoneSpinner;
     ArrayAdapter<CharSequence> timeZoneAdapter;
     //Selectable time zones layout variables - END
     boolean isLeftClockClicked = false;
@@ -83,6 +85,9 @@ public class TimezoneFragment extends Fragment implements
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+          SharedPreferences prefs;
+          String tz1;
+          String tz2;
 
     private ShareActionProvider mShareActionProvider;
     public TimezoneFragment() {
@@ -135,9 +140,15 @@ public class TimezoneFragment extends Fragment implements
         setupLocalTimeZone(rootView);
         addActions();
 
-        timeZoneAdapter = setupSpinnerAdapter();
-        timeZoneSpinner = (Spinner)rootView.findViewById(R.id.spinner);
-        timeZoneSpinner.setOnItemSelectedListener(this);
+//        timeZoneAdapter = setupSpinnerAdapter();
+//        timeZoneSpinner = (Spinner)rootView.findViewById(R.id.spinner);
+//        timeZoneSpinner.setOnItemSelectedListener(this);
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        tz1 = prefs.getString(getString(R.string.pref_tz1_key),
+                getString(R.string.pref_tz1_default));
+        tz2 = prefs.getString(getString(R.string.pref_tz2_key),
+                getString(R.string.pref_tz2_default));
 
 
         return rootView;
@@ -219,51 +230,51 @@ public class TimezoneFragment extends Fragment implements
             }
         });
 
-        imageButtonPlusLeft.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("TimeZonesFragment", "left plus: onClick");
-                isLeftClockClicked = true;
-                if (timeZoneSpinner.getAdapter() == null) {
-                    timeZoneSpinner.setAdapter(timeZoneAdapter);
-                }
-                timeZoneSpinner.performClick();
-            }
-        });
+//        imageButtonPlusLeft.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Log.d("TimeZonesFragment", "left plus: onClick");
+//                isLeftClockClicked = true;
+//                if (timeZoneSpinner.getAdapter() == null) {
+//                    timeZoneSpinner.setAdapter(timeZoneAdapter);
+//                }
+//                timeZoneSpinner.performClick();
+//            }
+//        });
+//
+//        imageButtonPlusRight.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                isRightClockClicked = true;
+//
+//                if (timeZoneSpinner.getAdapter() == null) {
+//                    timeZoneSpinner.setAdapter(timeZoneAdapter);
+//                }
+//                timeZoneSpinner.performClick();
+//            }
+//        });
 
-        imageButtonPlusRight.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isRightClockClicked = true;
-
-                if (timeZoneSpinner.getAdapter() == null) {
-                    timeZoneSpinner.setAdapter(timeZoneAdapter);
-                }
-                timeZoneSpinner.performClick();
-            }
-        });
-
-        analogClockLeft.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                rlClockLeft.setVisibility(View.GONE);
-                rlInteractionLeft.setVisibility(View.VISIBLE);
-                imageButtonDeleteLeft.setVisibility(View.VISIBLE);
-                imageButtonPlusLeft.setVisibility(View.GONE);
-                return true;
-            }
-        });
-
-        analogClockRight.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                rlClockRight.setVisibility(View.GONE);
-                rlInteractionRight.setVisibility(View.VISIBLE);
-                imageButtonDeleteRight.setVisibility(View.VISIBLE);
-                imageButtonPlusRight.setVisibility(View.GONE);
-                return true;
-            }
-        });
+//        analogClockLeft.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//                rlClockLeft.setVisibility(View.GONE);
+//                rlInteractionLeft.setVisibility(View.VISIBLE);
+//                imageButtonDeleteLeft.setVisibility(View.VISIBLE);
+//                imageButtonPlusLeft.setVisibility(View.GONE);
+//                return true;
+//            }
+//        });
+//
+//        analogClockRight.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//                rlClockRight.setVisibility(View.GONE);
+//                rlInteractionRight.setVisibility(View.VISIBLE);
+//                imageButtonDeleteRight.setVisibility(View.VISIBLE);
+//                imageButtonPlusRight.setVisibility(View.GONE);
+//                return true;
+//            }
+//        });
 
         imageButtonDeleteLeft.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -282,56 +293,58 @@ public class TimezoneFragment extends Fragment implements
         });
     }
 
-    private ArrayAdapter<CharSequence> setupSpinnerAdapter() {
-        ArrayAdapter<CharSequence> adapter =
-                new ArrayAdapter <CharSequence> (getActivity(), android.R.layout.simple_spinner_item );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        String[]TZ = TimeZone.getAvailableIDs();
-        ArrayList<String> TZ1 = new ArrayList<String>();
-        for(int i = 0; i < TZ.length; i++) {
-            if(!(TZ1.contains(TimeZone.getTimeZone(TZ[i]).getDisplayName()))) {
-                TZ1.add(TimeZone.getTimeZone(TZ[i]).getDisplayName());
-            }
-        }
+//    private ArrayAdapter<CharSequence> setupSpinnerAdapter() {
+//        ArrayAdapter<CharSequence> adapter =
+//                new ArrayAdapter <CharSequence> (getActivity(), android.R.layout.simple_spinner_item );
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+////        String[]TZ = TimeZone.getAvailableIDs();
+////        ArrayList<String> TZ1 = new ArrayList<String>();
+////        for(int i = 0; i < TZ.length; i++) {
+////            if(!(TZ1.contains(TimeZone.getTimeZone(TZ[i]).getDisplayName()))) {
+////                TZ1.add(TimeZone.getTimeZone(TZ[i]).getDisplayName());
+////            }
+////        }
+//
+////        Collections.sort(TZ1);
+//        String[] timezones = getResources().getStringArray(R.array.timezonesList);
+//
+//        for(int i = 0; i < timezones.length; i++) {
+//            adapter.add(timezones[i]);
+//        }
+//        return adapter;
+//    }
 
-        Collections.sort(TZ1);
-
-        for(int i = 0; i < TZ1.size(); i++) {
-            adapter.add(TZ1.get(i));
-        }
-        return adapter;
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String selectedId = (String) (parent
-                .getItemAtPosition(position));
-        Log.d("TimeZonesFragment", "time zone spinner: onItemSelected");
-
-        if (isLeftClockClicked) {
-            timeZone1 = TimeZone.getTimeZone(selectedId);
-            rlClockLeft.setVisibility(View.VISIBLE);
-            rlInteractionLeft.setVisibility(View.GONE);
-            textViewCityLeft.setText(timeZone1.getDisplayName());
-            updateAnalogClocks();
-            isLeftClockClicked = false;
-        }
-
-        if (isRightClockClicked) {
-            timeZone2 = TimeZone.getTimeZone(selectedId);
-            rlClockRight.setVisibility(View.VISIBLE);
-            rlInteractionRight.setVisibility(View.GONE);
-            textViewCityRight.setText(timeZone2.getDisplayName());
-            updateAnalogClocks();
-            isRightClockClicked = false;
-        }
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
+//    @Override
+//    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//        String selectedId = (String) (parent
+//                .getItemAtPosition(position));
+//        Log.d("TimeZonesFragment", "time zone spinner: onItemSelected");
+//
+//
+//        if (isLeftClockClicked) {
+//            timeZone1 = TimeZone.getTimeZone(selectedId);
+//            rlClockLeft.setVisibility(View.VISIBLE);
+//            rlInteractionLeft.setVisibility(View.GONE);
+//            textViewCityLeft.setText(selectedId);
+//            updateAnalogClocks();
+//            isLeftClockClicked = false;
+//        }
+//
+//        if (isRightClockClicked) {
+//            timeZone2 = TimeZone.getTimeZone(selectedId);
+//            rlClockRight.setVisibility(View.VISIBLE);
+//            rlInteractionRight.setVisibility(View.GONE);
+//            textViewCityRight.setText(selectedId);
+//            updateAnalogClocks();
+//            isRightClockClicked = false;
+//        }
+//
+//    }
+//
+//    @Override
+//    public void onNothingSelected(AdapterView<?> parent) {
+//
+//    }
 
     @Override
     public void onTimeTicked() {
@@ -345,12 +358,17 @@ public class TimezoneFragment extends Fragment implements
         long gmtLocal = TimeUnit.HOURS.convert(GMTLocalOffset, TimeUnit.MILLISECONDS);
         int gmtSelectedOffset;
 
+        tz1 = prefs.getString(getString(R.string.pref_tz1_key),
+                getString(R.string.pref_tz1_default));
+        tz2 = prefs.getString(getString(R.string.pref_tz2_key),
+                getString(R.string.pref_tz2_default));
+
         if (analogClockLeft != null && timeZone1 != null) {
             gmtSelectedOffset = timeZone1.getRawOffset();
             long gmtSelected = TimeUnit.HOURS.convert(gmtSelectedOffset, TimeUnit.MILLISECONDS);
             long hourDiff = gmtSelected - gmtLocal;
             analogClockLeft.setTimeZone(timeZone1);
-
+            textViewCityLeft.setText(tz1);
             String gmt = String.valueOf(hourDiff);
             if (hourDiff == 0) {
                 gmt = "";
@@ -362,6 +380,7 @@ public class TimezoneFragment extends Fragment implements
             long gmtSelected = TimeUnit.HOURS.convert(gmtSelectedOffset, TimeUnit.MILLISECONDS);
             long hourDiff = gmtSelected - gmtLocal;
             analogClockRight.setTimeZone(timeZone2);
+            textViewCityRight.setText(tz2);
 
             String gmt = String.valueOf(hourDiff);
             if (gmtSelectedOffset == 0) {
@@ -407,6 +426,27 @@ public class TimezoneFragment extends Fragment implements
         shareIntent.putExtra(Intent.EXTRA_TEXT, "I am using this amazing app!");
         return shareIntent;
     }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+
+
+            timeZone1 = TimeZone.getTimeZone(tz1);
+            rlClockLeft.setVisibility(View.VISIBLE);
+            rlInteractionLeft.setVisibility(View.GONE);
+
+            isLeftClockClicked = false;
+
+            timeZone2 = TimeZone.getTimeZone(tz2);
+            rlClockRight.setVisibility(View.VISIBLE);
+            rlInteractionRight.setVisibility(View.GONE);
+
+            isRightClockClicked = false;
+            updateAnalogClocks();
+
+        }
 
 
 
