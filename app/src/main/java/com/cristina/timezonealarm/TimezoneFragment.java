@@ -216,7 +216,7 @@ public class TimezoneFragment extends Fragment implements
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent(getActivity(), AlarmsActivity.class);
-                myIntent.putExtra("timezone", timeZone1);
+                myIntent.putExtra("timezone", tz1);
                 startActivity(myIntent);
             }
         });
@@ -225,7 +225,7 @@ public class TimezoneFragment extends Fragment implements
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent(getActivity(), AlarmsActivity.class);
-                myIntent.putExtra("timezone", timeZone2);
+                myIntent.putExtra("timezone", tz2);
                 startActivity(myIntent);
             }
         });

@@ -4,20 +4,21 @@ package com.cristina.timezonealarm;
  * Created by Cristina on 3/7/2015.
  */
 
-import android.app.LoaderManager;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -43,11 +44,12 @@ import com.cristina.timezonealarm.data.AlarmsTable;
 import com.cristina.timezonealarm.swipelistview.SwipeDismissListViewTouchListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.TimeZone;
 
 
 public class AlarmsFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<Cursor>{
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     public AlarmsFragment() {
     }
@@ -70,9 +72,8 @@ public class AlarmsFragment extends Fragment implements
     Uri alarmUri;
     private SimpleCursorAdapter adapter;
 
-    TimeZone localTZ;
-    Spinner timeZoneSpinner;
-    ArrayAdapter<CharSequence> timeZoneAdapter;
+
+    private ArrayAdapter<String> _adapter;
 
 
     @Override
@@ -81,10 +82,9 @@ public class AlarmsFragment extends Fragment implements
         View rootView = inflater.inflate(R.layout.fragment_alarms, container, false);
 
 
-
-
         alarmUri = (savedInstanceState == null) ? null : (Uri) savedInstanceState
                 .getParcelable(AlarmsProvider.CONTENT_ITEM_TYPE);
+
 
         needle = (ImageView) rootView.findViewById(R.id.needle);
         back = (ImageView) rootView.findViewById(R.id.back);
@@ -92,6 +92,16 @@ public class AlarmsFragment extends Fragment implements
         addNewAlarm = (Button) rootView.findViewById(R.id.addNewAlarm);
         setAlarm = (Button) rootView.findViewById(R.id.setAlarm);
         alarmListView = (ListView) rootView.findViewById(R.id.alarmListView);
+
+        String[] from = new String[] { AlarmsTable.COLUMN_TITLE };
+        // Fields on the UI to which we map
+        int[] to = new int[] { R.id.titleTextView };
+
+        getLoaderManager().initLoader(0, null,this);
+        adapter = new SimpleCursorAdapter(getActivity(), R.layout.alarm_list_view_item, null, from,
+                to, 0);
+
+        alarmListView.setAdapter(adapter);
 
         SwipeDismissListViewTouchListener touchListener =
                 new SwipeDismissListViewTouchListener(
@@ -157,9 +167,6 @@ public class AlarmsFragment extends Fragment implements
                             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                                 if (actionId == EditorInfo.IME_ACTION_DONE) {
 
-
-
-
                                     alarm.title = editText.getText().toString();
                                     alarm.active = 1;
                                     editText.setVisibility(View.GONE);
@@ -177,7 +184,7 @@ public class AlarmsFragment extends Fragment implements
                                     values.put(AlarmsTable.COLUMN_TIMEOFDAY, alarm.timeOfDay);
                                     values.put(AlarmsTable.COLUMN_TITLE, alarm.title);
                                     values.put(AlarmsTable.COLUMN_ACTIVE, alarm.active);
-                                    values.put(AlarmsTable.COLUMN_TIMEZONEID,intent.getStringExtra("timezone"));
+                                    values.put(AlarmsTable.COLUMN_TIMEZONEID, intent.getStringExtra("timezone"));
 
 
 //                                    alarmUri = getActivity().getContentResolver().insert(AlarmsProvider.CONTENT_URI, values);
@@ -193,6 +200,20 @@ public class AlarmsFragment extends Fragment implements
 //                                    } catch (Exception e) {
 //                                        e.printStackTrace();
 //                                    }
+
+                                    Intent intent2 = new Intent(getActivity(), MyBroadcastReceiver.class);
+                                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, intent2, 0);
+
+
+                                    AlarmManager alarm = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+
+                                    Calendar calendar = Calendar.getInstance();
+                                    calendar.setTimeInMillis(System.currentTimeMillis());
+                                    calendar.set(Calendar.HOUR_OF_DAY, 14);
+                                    calendar.set(Calendar.MINUTE, 13);
+
+                                    alarm.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                                            AlarmManager.INTERVAL_DAY, pendingIntent);
 
 
                                     return true;
@@ -352,7 +373,7 @@ public class AlarmsFragment extends Fragment implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] projection = { AlarmsTable.COLUMN_ID, AlarmsTable.COLUMN_TITLE };
+        String[] projection = {AlarmsTable.COLUMN_ID, AlarmsTable.COLUMN_TITLE};
         CursorLoader cursorLoader = new CursorLoader(getActivity().getApplicationContext(),
                 AlarmsProvider.CONTENT_URI, projection, null, null, null);
         return cursorLoader;

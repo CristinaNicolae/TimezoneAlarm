@@ -56,7 +56,7 @@ public class AlarmsProvider extends ContentProvider {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 
         // check if the caller has requested a column which does not exists
-        checkColumns(projection);
+//        checkColumns(projection);
 
         // Set the table
         queryBuilder.setTables(AlarmsTable.TABLE_ALARMS);
