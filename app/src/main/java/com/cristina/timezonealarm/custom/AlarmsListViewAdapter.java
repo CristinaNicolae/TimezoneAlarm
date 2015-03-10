@@ -90,7 +90,7 @@ public class AlarmsListViewAdapter extends BaseAdapter {
         {
             titleTextView.setText(alarm.title);
         }
-        if(alarm.active)
+        if(alarm.active == 1)
         {
             toggleButton.setChecked(true);
         }
@@ -102,11 +102,11 @@ public class AlarmsListViewAdapter extends BaseAdapter {
             public void onClick(View v) {
                 if(toggleButton.isChecked())
                 {
-                    alarm.active=true;
+                    alarm.active=1;
                 }
                 else
                 {
-                    alarm.active=false;
+                    alarm.active=0;
                 }
             }
         });

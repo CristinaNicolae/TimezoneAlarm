@@ -4,12 +4,20 @@ package com.cristina.timezonealarm;
  * Created by Cristina on 3/7/2015.
  */
 
+import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.CursorLoader;
+import android.content.Intent;
+import android.content.Loader;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.PointF;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -18,21 +26,28 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.cristina.timezonealarm.custom.Alarm;
 import com.cristina.timezonealarm.custom.AlarmsListViewAdapter;
+import com.cristina.timezonealarm.data.AlarmsProvider;
+import com.cristina.timezonealarm.data.AlarmsTable;
 import com.cristina.timezonealarm.swipelistview.SwipeDismissListViewTouchListener;
 
 import java.util.ArrayList;
+import java.util.TimeZone;
 
 
-public class AlarmsFragment extends Fragment {
+public class AlarmsFragment extends Fragment implements
+        LoaderManager.LoaderCallbacks<Cursor>{
 
     public AlarmsFragment() {
     }
@@ -52,6 +67,12 @@ public class AlarmsFragment extends Fragment {
     ImageView upImage;
     ImageView downImage;
     ImageView timeZoneImage;
+    Uri alarmUri;
+    private SimpleCursorAdapter adapter;
+
+    TimeZone localTZ;
+    Spinner timeZoneSpinner;
+    ArrayAdapter<CharSequence> timeZoneAdapter;
 
 
     @Override
@@ -59,6 +80,11 @@ public class AlarmsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_alarms, container, false);
 
+
+
+
+        alarmUri = (savedInstanceState == null) ? null : (Uri) savedInstanceState
+                .getParcelable(AlarmsProvider.CONTENT_ITEM_TYPE);
 
         needle = (ImageView) rootView.findViewById(R.id.needle);
         back = (ImageView) rootView.findViewById(R.id.back);
@@ -131,13 +157,42 @@ public class AlarmsFragment extends Fragment {
                             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                                 if (actionId == EditorInfo.IME_ACTION_DONE) {
 
+
+
+
                                     alarm.title = editText.getText().toString();
-                                    alarm.active = true;
+                                    alarm.active = 1;
                                     editText.setVisibility(View.GONE);
                                     imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
                                     titleTextView.setText(alarm.title);
                                     listViewAdapter.updateElement(alarm);
                                     toggleButton.setChecked(true);
+
+                                    ContentValues values = new ContentValues();
+                                    values.put(AlarmsTable.COLUMN_HOUR, alarm.numberOfHours);
+                                    values.put(AlarmsTable.COLUMN_MINUTE, alarm.numberOfMinutes);
+                                    values.put(AlarmsTable.COLUMN_ANGLE, alarm.angle);
+                                    values.put(AlarmsTable.COLUMN_TIMEOFDAY, alarm.timeOfDay);
+                                    values.put(AlarmsTable.COLUMN_TITLE, alarm.title);
+                                    values.put(AlarmsTable.COLUMN_ACTIVE, alarm.active);
+                                    values.put(AlarmsTable.COLUMN_TIMEZONEID,1);
+
+
+//                                    alarmUri = getActivity().getContentResolver().insert(AlarmsProvider.CONTENT_URI, values);
+//
+//
+//                                    Bundle extras = getActivity().getIntent().getExtras();
+//                                    Uri todoUri = Uri.parse(AlarmsProvider.CONTENT_URI + "/1");
+//
+//
+//
+//                                    try {
+//                                        fillData(todoUri);
+//                                    } catch (Exception e) {
+//                                        e.printStackTrace();
+//                                    }
+
+
                                     return true;
                                 }
                                 return false;
@@ -173,7 +228,7 @@ public class AlarmsFragment extends Fragment {
                 needle.setPivotX(back.getWidth() / 2);
                 needle.setPivotY(back.getHeight() / 2);
                 needle.setRotation(0);
-                alarm = new Alarm(12, 0, 0, -1, "", false);
+                alarm = new Alarm(12, 0, 0, -1, "", 0);
                 time.setText(String.format("%02d", alarm.numberOfHours) + ":" + String.format("%02d", alarm.numberOfMinutes) + "  PM");
                 isTouchable = true;
                 addNewAlarm.setVisibility(View.INVISIBLE);
@@ -291,4 +346,44 @@ public class AlarmsFragment extends Fragment {
 
         return rootView;
     }
+
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String[] projection = { AlarmsTable.COLUMN_ID, AlarmsTable.COLUMN_TITLE };
+        CursorLoader cursorLoader = new CursorLoader(getActivity().getApplicationContext(),
+                AlarmsProvider.CONTENT_URI, projection, null, null, null);
+        return cursorLoader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        adapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        // data is not available anymore, delete reference
+        adapter.swapCursor(null);
+    }
+
+    private void fillData(Uri uri) {
+
+        //getLoaderManager().initLoader(0, null, this);
+//        String[] projection = { AlarmsTable.COLUMN_TITLE };
+//        Cursor cursor = getActivity().getContentResolver().query(uri, projection, null, null,
+//                null);
+//        if (cursor != null) {
+//            cursor.moveToFirst();
+//            String category = cursor.getString(cursor
+//                    .getColumnIndexOrThrow(AlarmsTable.COLUMN_TITLE));
+//
+//            Log.d("styrsa", cursor.getString(cursor
+//                    .getColumnIndexOrThrow(AlarmsTable.COLUMN_TITLE)));
+//
+//
+//            // always close the cursor
+//            cursor.close();
+    }
+
 }

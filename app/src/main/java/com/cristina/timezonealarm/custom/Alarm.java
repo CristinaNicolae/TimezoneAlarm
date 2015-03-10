@@ -11,9 +11,9 @@ public class Alarm {
     public float angle;
     public int timeOfDay;
     public  String title;
-    public boolean active;
+    public int active;
 
-    public Alarm(int numberOfHours, int numberOfMinutes, float angle, int timeOfDay, String title, boolean active)
+    public Alarm(int numberOfHours, int numberOfMinutes, float angle, int timeOfDay, String title, int active)
     {
         this.numberOfHours = numberOfHours;
         this.numberOfMinutes = numberOfMinutes;

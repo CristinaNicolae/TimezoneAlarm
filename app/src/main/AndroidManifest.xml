@@ -24,6 +24,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+        <provider
+            android:name=".data.AlarmsProvider"
+            android:authorities="com.cristina.timezonealarm" >
+        </provider>
         <receiver android:process=":remote" android:name="MyBroadcastReceiver"></receiver>
     </application>
 
