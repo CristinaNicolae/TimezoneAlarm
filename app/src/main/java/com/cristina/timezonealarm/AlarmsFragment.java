@@ -202,17 +202,20 @@ public class AlarmsFragment extends Fragment implements
 //                                    }
 
                                     Intent intent2 = new Intent(getActivity(), MyBroadcastReceiver.class);
-                                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, intent2, 0);
+                                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, intent2,PendingIntent.FLAG_UPDATE_CURRENT);
 
 
-                                    AlarmManager alarm = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+                                    AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
 
                                     Calendar calendar = Calendar.getInstance();
                                     calendar.setTimeInMillis(System.currentTimeMillis());
-                                    calendar.set(Calendar.HOUR_OF_DAY, 14);
-                                    calendar.set(Calendar.MINUTE, 13);
+                                    if(alarm.timeOfDay==1)
+                                    calendar.set(Calendar.HOUR_OF_DAY, alarm.numberOfHours+12);
+                                    else
+                                    calendar.set(Calendar.HOUR_OF_DAY, alarm.numberOfHours);
+                                    calendar.set(Calendar.MINUTE, alarm.numberOfMinutes);
 
-                                    alarm.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                                             AlarmManager.INTERVAL_DAY, pendingIntent);
 
 
