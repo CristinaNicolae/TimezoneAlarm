@@ -411,19 +411,22 @@ public class TimezoneFragment extends Fragment implements
         // Get the provider and hold onto it to set/change the share intent.
         mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
 
+        tz1 = prefs.getString(getString(R.string.pref_tz1_key),
+                getString(R.string.pref_tz1_default));
+        tz2 = prefs.getString(getString(R.string.pref_tz2_key),
+                getString(R.string.pref_tz2_default));
+
         if (mShareActionProvider != null ) {
-            mShareActionProvider.setShareIntent(createShareIntent());
-        } else {
-            // nada
+            mShareActionProvider.setShareIntent(createShareIntent(tz1,tz2));
         }
     }
 
 
-    private Intent createShareIntent() {
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+    private Intent createShareIntent(String tz1, String tz2) {
+       Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, "I am using this amazing app!");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "I am using TimezoneAlarm. I set " + tz1 + " and " + tz2 + " to add alarms! You should check it!");
         return shareIntent;
     }
 
@@ -432,8 +435,15 @@ public class TimezoneFragment extends Fragment implements
     {
         super.onStart();
 
+        tz1 = prefs.getString(getString(R.string.pref_tz1_key),
+                getString(R.string.pref_tz1_default));
+        tz2 = prefs.getString(getString(R.string.pref_tz2_key),
+                getString(R.string.pref_tz2_default));
 
-            timeZone1 = TimeZone.getTimeZone(tz1);
+        if (mShareActionProvider != null ) {
+            mShareActionProvider.setShareIntent(createShareIntent(tz1,tz2));
+        }
+        timeZone1 = TimeZone.getTimeZone(tz1);
             rlClockLeft.setVisibility(View.VISIBLE);
             rlInteractionLeft.setVisibility(View.GONE);
 
