@@ -165,8 +165,8 @@ public class TimezoneFragment extends Fragment implements
     private void updateLocalTimeZoneLabel(View rootView) {
         Calendar cal = Calendar.getInstance();
         localTZ = cal.getTimeZone();
-        final TextView textViewLocalTZ = (TextView) rootView.findViewById(R.id.textViewLocalTZ);
-        textViewLocalTZ.setText(localTZ.getDisplayName());
+       // final TextView textViewLocalTZ = (TextView) rootView.findViewById(R.id.textViewLocalTZ);
+       // textViewLocalTZ.setText(localTZ.getDisplayName());
 
         final android.widget.AnalogClock clock = (android.widget.AnalogClock) rootView.findViewById(R.id.analogClockCenter);
         ViewTreeObserver vto = clock.getViewTreeObserver();
@@ -368,7 +368,7 @@ public class TimezoneFragment extends Fragment implements
             long gmtSelected = TimeUnit.HOURS.convert(gmtSelectedOffset, TimeUnit.MILLISECONDS);
             long hourDiff = gmtSelected - gmtLocal;
             analogClockLeft.setTimeZone(timeZone1);
-            textViewCityLeft.setText(tz1);
+            textViewCityLeft.setText(tz1.split("/")[1]);
             String gmt = String.valueOf(hourDiff);
             if (hourDiff == 0) {
                 gmt = "";
@@ -380,7 +380,7 @@ public class TimezoneFragment extends Fragment implements
             long gmtSelected = TimeUnit.HOURS.convert(gmtSelectedOffset, TimeUnit.MILLISECONDS);
             long hourDiff = gmtSelected - gmtLocal;
             analogClockRight.setTimeZone(timeZone2);
-            textViewCityRight.setText(tz2);
+            textViewCityRight.setText(tz2.split("/")[1]);
 
             String gmt = String.valueOf(hourDiff);
             if (gmtSelectedOffset == 0) {

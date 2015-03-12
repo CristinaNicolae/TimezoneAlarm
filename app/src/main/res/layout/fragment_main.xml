@@ -10,73 +10,10 @@
     tools:context=".MainActivity$TimezoneFragment">
 
 
-    <RelativeLayout
-        android:id="@+id/topLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="20dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp">
-
-        <FrameLayout
-            android:id="@+id/frameLayoutBattery"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true">
-
-<!--            <ImageView
-                android:id="@+id/batteryButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/top_left_button" />-->
-
-            <TextView
-                android:id="@+id/textViewBattery"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="100%"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="#ffda00"
-                android:textSize="12sp" />
-
-        </FrameLayout>
-
-
-        <FrameLayout
-            android:id="@+id/frameLayoutNotifications"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:gravity="center">
-
-     <!--       <ImageView
-                android:id="@+id/notificationsButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/top_right_yellow_button" />-->
-
-            <TextView
-                android:id="@+id/textViewNotifications"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="ON"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="#ffda00"
-                android:textSize="12sp" />
-
-        </FrameLayout>
-    </RelativeLayout>
-
     <AnalogClock
         android:id="@+id/analogClockCenter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/topLayout"
         android:layout_centerHorizontal="true"
         android:dial="@drawable/top_clock_background"
         android:hand_hour="@drawable/top_clock_hour_line"
@@ -295,18 +232,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="LOCAL"
-            android:textColor="#ffda00" />
-
-        <TextView
-            android:id="@+id/textViewLocalTZ"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:maxLines="2"
-            android:singleLine="false"
-            android:text="BUCHAREST"
-            android:textAlignment="center"
             android:textColor="#ffda00" />
 
     </LinearLayout>
