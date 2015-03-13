@@ -8,10 +8,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
@@ -31,6 +35,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.cristina.timezonealarm.custom.AnalogClock;
+import com.cristina.timezonealarm.data.AlarmsProvider;
+import com.cristina.timezonealarm.data.AlarmsTable;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,7 +49,8 @@ import java.util.concurrent.TimeUnit;
 
 
 public class TimezoneFragment extends Fragment implements
-       AnalogClock.AnalogClockListener
+       AnalogClock.AnalogClockListener,
+        LoaderManager.LoaderCallbacks<Cursor>
       {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -458,6 +465,27 @@ public class TimezoneFragment extends Fragment implements
 
         }
 
+
+
+
+          @Override
+          public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+              String[] projection = {AlarmsTable.COLUMN_ID, AlarmsTable.COLUMN_TITLE};
+              CursorLoader cursorLoader = new CursorLoader(getActivity().getApplicationContext(),
+                      AlarmsProvider.CONTENT_URI, projection, null, null, null);
+              return cursorLoader;
+          }
+
+          @Override
+          public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+              //adapter.swapCursor(data);
+          }
+
+          @Override
+          public void onLoaderReset(Loader<Cursor> loader) {
+              // data is not available anymore, delete reference
+             // adapter.swapCursor(null);
+          }
 
 
 }

@@ -67,7 +67,7 @@ public class AlarmsProvider extends ContentProvider {
                 break;
             case ALARM_ID:
                 // adding the ID to the original query
-                queryBuilder.appendWhere(AlarmsTable.COLUMN_TIMEZONEID + "="
+                queryBuilder.appendWhere(AlarmsTable.COLUMN_ID + "="
                         + uri.getLastPathSegment());
                 break;
             default:

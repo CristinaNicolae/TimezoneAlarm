@@ -33,7 +33,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -45,7 +44,6 @@ import com.cristina.timezonealarm.swipelistview.SwipeDismissListViewTouchListene
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.TimeZone;
 
 
 public class AlarmsFragment extends Fragment implements
@@ -97,11 +95,13 @@ public class AlarmsFragment extends Fragment implements
         // Fields on the UI to which we map
         int[] to = new int[] { R.id.titleTextView };
 
-        getLoaderManager().initLoader(0, null,this);
-        adapter = new SimpleCursorAdapter(getActivity(), R.layout.alarm_list_view_item, null, from,
-                to, 0);
-
-        alarmListView.setAdapter(adapter);
+//        getLoaderManager().initLoader(0, null,this);
+        Intent intent = getActivity().getIntent();
+        fillData(intent.getStringExtra("timezone"));
+//        adapter = new SimpleCursorAdapter(getActivity(), R.layout.alarm_list_view_item, null, from,
+//                to, 0);
+//
+//        alarmListView.setAdapter(adapter);
 
         SwipeDismissListViewTouchListener touchListener =
                 new SwipeDismissListViewTouchListener(
@@ -202,6 +202,9 @@ public class AlarmsFragment extends Fragment implements
 //                                    }
 
                                     Intent intent2 = new Intent(getActivity(), MyBroadcastReceiver.class);
+                                    intent2.putExtra("timezone", intent.getStringExtra("timezone"));
+                                    intent2.putExtra("title", alarm.title);
+                                    intent2.putExtra("alarm_time", alarm.numberOfHours+":"+alarm.numberOfMinutes);
                                     PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, intent2,PendingIntent.FLAG_UPDATE_CURRENT);
 
 
@@ -213,7 +216,9 @@ public class AlarmsFragment extends Fragment implements
                                     calendar.set(Calendar.HOUR_OF_DAY, alarm.numberOfHours+12);
                                     else
                                     calendar.set(Calendar.HOUR_OF_DAY, alarm.numberOfHours);
-                                    calendar.set(Calendar.MINUTE, alarm.numberOfMinutes);
+
+
+                                    calendar.set(Calendar.MINUTE, alarm.numberOfMinutes-1);
 
                                     alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                                             AlarmManager.INTERVAL_DAY, pendingIntent);
@@ -393,23 +398,23 @@ public class AlarmsFragment extends Fragment implements
         adapter.swapCursor(null);
     }
 
-    private void fillData(Uri uri) {
+    private void fillData(String timezone) {
 
-        //getLoaderManager().initLoader(0, null, this);
-//        String[] projection = { AlarmsTable.COLUMN_TITLE };
+        getLoaderManager().initLoader(0, null, this);
+        String[] projection = {AlarmsTable.COLUMN_TITLE, AlarmsTable.COLUMN_HOUR, AlarmsTable.COLUMN_MINUTE};
 //        Cursor cursor = getActivity().getContentResolver().query(uri, projection, null, null,
 //                null);
-//        if (cursor != null) {
-//            cursor.moveToFirst();
-//            String category = cursor.getString(cursor
-//                    .getColumnIndexOrThrow(AlarmsTable.COLUMN_TITLE));
-//
-//            Log.d("styrsa", cursor.getString(cursor
-//                    .getColumnIndexOrThrow(AlarmsTable.COLUMN_TITLE)));
-//
-//
-//            // always close the cursor
-//            cursor.close();
-    }
+        Cursor cursor = new CursorLoader(getActivity(), AlarmsProvider.CONTENT_URI, projection, AlarmsTable.COLUMN_TIMEZONEID + "= ?", new String[]{timezone}, null ).loadInBackground();
+        if (cursor != null) {
+            cursor.moveToFirst();
+            String category = cursor.getString(cursor
+                    .getColumnIndexOrThrow(AlarmsTable.COLUMN_TITLE));
+//            String title = cursor.getColumn(AlarmsTable.COLUMN_TITLE);
 
+            // always close the cursor
+            cursor.close();
+        }
+
+
+    }
 }
