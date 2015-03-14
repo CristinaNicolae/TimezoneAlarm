@@ -281,9 +281,9 @@ public class TimezoneFragment extends Fragment implements
             analogClockLeft.setTimeZone(timeZone1);
             textViewCityLeft.setText(tz1.split("/")[1]);
             String gmt = String.valueOf(hourDiff);
-            if (hourDiff == 0) {
-                gmt = "";
-            }
+//            if (hourDiff == 0) {
+//                gmt = "";
+//            }
             textViewTimeLeft.setText(gmt);
         }
         if (analogClockRight != null && timeZone2 != null) {

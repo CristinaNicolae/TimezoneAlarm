@@ -1,0 +1,225 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity$TimezoneFragment">
+
+
+    <AnalogClock
+        android:id="@+id/analogClockCenter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+
+        android:dial="@drawable/top_clock_background"
+        android:hand_hour="@drawable/top_clock_hour_line"
+        android:hand_minute="@drawable/top_clock_minute_line"
+        android:paddingRight="20dp"
+        android:padding="20dp"
+        android:layout_weight="1"
+        android:layout_gravity="center" />
+
+    <!--
+    Linear layout containing modifiable time zone clocks.
+    -->
+    <LinearLayout
+        android:id="@+id/timeZonesll"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/analogClockCenter"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_gravity="center"
+        android:layout_weight="1">
+
+        <!--
+             Container of the left analog clock.
+            -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_gravity="center">
+
+
+            <RelativeLayout
+                android:id="@+id/relativeLayoutInteractionLeft"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:layout_gravity="center">
+
+                <ImageView
+                    android:id="@+id/imageViewBackground"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/timezones_background"/>
+
+                <ImageButton
+                    android:id="@+id/imageButtonPlusLeft"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@null"
+                    android:src="@drawable/timezones_plus" />
+
+                <ImageButton
+                    android:id="@+id/imageButtonDeleteLeft"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@null"
+                    android:src="@drawable/timezones_remove"
+                    android:visibility="invisible" />
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/relativeLayoutClockLeft"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:visibility="invisible">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textViewCityLeft"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="NEW YORK"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="#ffda00" />
+
+                    <TextView
+                        android:id="@+id/textViewTimeLeft"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="11:00"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="#ffda00" />
+
+                </LinearLayout>
+
+                <com.cristina.timezonealarm.custom.AnalogClock
+                    android:id="@+id/analogClockTimeZoneLeft"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:dial="@drawable/bottom_clock_background"
+                    android:hand_hour="@drawable/bottom_clock_hour_line"
+                    android:hand_minute="@drawable/bottom_clock_minute_line"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+
+        <!--
+             Container of the right analog clock.
+            -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/relativeLayoutInteractionRight"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:gravity="center"
+                android:layout_gravity="center">
+
+                <ImageView
+                    android:id="@+id/imageViewBackgroundRight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/timezones_background"/>
+
+                <ImageButton
+                    android:id="@+id/imageButtonPlusRight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@null"
+                    android:src="@drawable/timezones_plus" />
+
+                <ImageButton
+                    android:id="@+id/imageButtonDeleteRight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@null"
+                    android:src="@drawable/timezones_remove"
+                    android:visibility="invisible" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relativeLayoutClockRight"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:gravity="center"
+                android:visibility="invisible">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textViewCityRight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="NEW YORK"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="#ffda00" />
+
+                    <TextView
+                        android:id="@+id/textViewTimeRight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="11:00"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="#ffda00" />
+
+                </LinearLayout>
+
+                <com.cristina.timezonealarm.custom.AnalogClock
+                    android:id="@+id/analogClockTimeZoneRight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:dial="@drawable/bottom_clock_background"
+                    android:hand_hour="@drawable/bottom_clock_hour_line"
+                    android:hand_minute="@drawable/bottom_clock_minute_line"/>
+
+            </RelativeLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
