@@ -19,6 +19,13 @@
         android:orientation="horizontal"
         android:tag="front">
 
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/alarmID"
+            android:layout_weight="1"
+            android:visibility="gone"/>
+
 
 
         <LinearLayout
@@ -66,11 +73,6 @@
                 android:layout_marginLeft="3dp"
                 android:textColor="#CCB69B"
                 />
-
-
-
-
-
             </LinearLayout>
 
 
