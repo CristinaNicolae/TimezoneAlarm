@@ -192,10 +192,11 @@ public class AlarmsFragment extends Fragment implements
 
                         Calendar calendar = Calendar.getInstance();
                         calendar.setTimeInMillis(System.currentTimeMillis());
+                        int gmt = Integer.valueOf(intent.getStringExtra("gmt"));
                         if (alarm.timeOfDay == 1)
-                            calendar.set(Calendar.HOUR_OF_DAY, alarm.numberOfHours + 12);
+                            calendar.set(Calendar.HOUR_OF_DAY, alarm.numberOfHours + 12 + gmt);
                         else
-                            calendar.set(Calendar.HOUR_OF_DAY, alarm.numberOfHours);
+                            calendar.set(Calendar.HOUR_OF_DAY, alarm.numberOfHours + gmt );
 
 
                         calendar.set(Calendar.MINUTE, alarm.numberOfMinutes - 1);
