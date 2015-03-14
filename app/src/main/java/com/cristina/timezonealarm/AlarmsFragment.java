@@ -187,6 +187,7 @@ public class AlarmsFragment extends Fragment implements
                         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
 
                         Calendar calendar = Calendar.getInstance();
+                        Calendar now = Calendar.getInstance();
                         calendar.setTimeInMillis(System.currentTimeMillis());
                         int gmt = Integer.valueOf(intent.getStringExtra("gmt"));
                         if (alarm.timeOfDay == 1)
@@ -194,11 +195,17 @@ public class AlarmsFragment extends Fragment implements
                         else
                             calendar.set(Calendar.HOUR_OF_DAY, alarm.numberOfHours + gmt );
 
+                        long _alarm;
+                        if(calendar.getTimeInMillis() <= now.getTimeInMillis())
+                            _alarm = calendar.getTimeInMillis() + (AlarmManager.INTERVAL_DAY+1);
+                        else
+                            _alarm = calendar.getTimeInMillis();
+
 
                         calendar.set(Calendar.MINUTE, alarm.numberOfMinutes - 1);
                         calendar.set(Calendar.SECOND, 0);
 
-                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, _alarm,
                                 AlarmManager.INTERVAL_DAY, pendingIntent);
 
                         dialog.dismiss();
