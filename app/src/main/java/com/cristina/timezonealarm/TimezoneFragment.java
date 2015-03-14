@@ -2,6 +2,7 @@ package com.cristina.timezonealarm;
 
 import android.app.Activity;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -56,7 +57,8 @@ public class TimezoneFragment extends Fragment implements
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private final BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
+          private static final int MODE_PRIVATE =1 ;
+          private final BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -134,14 +136,36 @@ public class TimezoneFragment extends Fragment implements
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+
         }
+
     }
+
+          public void checkFirstRun() {
+          boolean isFirstRun = getActivity().getSharedPreferences("PREFERENCE1", MODE_PRIVATE).getBoolean("isFirstRunTimezones", true);
+              if (isFirstRun){
+
+                  // Place your dialog code here to display the dialog
+                  new AlertDialog.Builder(getActivity()).setTitle("Welcome!").setMessage("You can change the timezones from settings.").setNeutralButton("OK", null).show();
+
+                  getActivity().getSharedPreferences("PREFERENCE1", MODE_PRIVATE)
+                          .edit()
+                          .putBoolean("isFirstRunTimezones", false)
+                          .apply();
+              }
+
+
+          }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        checkFirstRun();
+
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+
 
         bindSelectableTimeZonesLayout(rootView);
         setupLocalTimeZone(rootView);
@@ -165,7 +189,6 @@ public class TimezoneFragment extends Fragment implements
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
         getActivity().registerReceiver(mIntentReceiver, filter, null, null);
-
         updateLocalTimeZoneLabel(rootView);
     }
 
@@ -294,9 +317,9 @@ public class TimezoneFragment extends Fragment implements
             textViewCityRight.setText(tz2.split("/")[1]);
 
             String gmt = String.valueOf(hourDiff);
-            if (gmtSelectedOffset == 0) {
-                gmt = "";
-            }
+//            if (gmtSelectedOffset == 0) {
+//                gmt = "";
+//            }
             textViewTimeRight.setText(gmt);
         }
     }

@@ -47,6 +47,8 @@ import java.util.Calendar;
 public class AlarmsFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
+    private static final int MODE_PRIVATE = 2;
+
     public AlarmsFragment() {
     }
 
@@ -67,11 +69,29 @@ public class AlarmsFragment extends Fragment implements
     private SimpleCursorAdapter adapter;
     ArrayList<PendingIntents> piArray = new ArrayList<PendingIntents>();
 
+    public void checkFirstRun() {
+        boolean isFirstRun = getActivity().getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("isFirstRunAlarms", true);
+        if (isFirstRun){
+
+            // Place your dialog code here to display the dialog
+            new AlertDialog.Builder(getActivity()).setTitle("Help").setMessage("To add an alarm click on 'ADD' button and rotate the needle to the time you want. To delete an alarm long press on it.").setNeutralButton("OK", null).show();
+
+            getActivity().getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+                    .edit()
+                    .putBoolean("isFirstRunAlarms", false)
+                    .apply();
+        }
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        checkFirstRun();
         View rootView = inflater.inflate(R.layout.fragment_alarms, container, false);
+
+
 
 
         alarmUri = (savedInstanceState == null) ? null : (Uri) savedInstanceState
