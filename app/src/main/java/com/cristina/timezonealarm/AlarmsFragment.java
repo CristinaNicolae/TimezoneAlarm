@@ -63,8 +63,6 @@ public class AlarmsFragment extends Fragment implements
     boolean isTouchable = false;
     ListView alarmListView;
     ArrayList<Alarm> alarmArrayList = new ArrayList<Alarm>();
-    ImageView upImage;
-    ImageView downImage;
     Uri alarmUri;
     private SimpleCursorAdapter adapter;
     ArrayList<PendingIntents> piArray = new ArrayList<PendingIntents>();
@@ -132,8 +130,6 @@ public class AlarmsFragment extends Fragment implements
             }
         });
 
-        upImage = (ImageView) rootView.findViewById(R.id.upImage);
-        downImage = (ImageView) rootView.findViewById(R.id.downImage);
         setAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -333,22 +329,22 @@ public class AlarmsFragment extends Fragment implements
 //                Log.d("first visible", String.valueOf(alarmListView.getFirstVisiblePosition()));
 //                Log.d("last visible", String.valueOf(alarmListView.getLastVisiblePosition()));
 //                Log.d("size", String.valueOf(alarmArrayList.size()-1));
-                if (alarmListView.getFirstVisiblePosition() == 0 && alarmListView.getLastVisiblePosition() == alarmArrayList.size() - 1) {
-                    upImage.setVisibility(View.INVISIBLE);
-                    downImage.setVisibility(View.INVISIBLE);
-                }
-                if (alarmListView.getFirstVisiblePosition() == 0 && alarmListView.getLastVisiblePosition() != alarmArrayList.size() - 1) {
-                    upImage.setVisibility(View.INVISIBLE);
-                    downImage.setVisibility(View.VISIBLE);
-                }
-                if (alarmListView.getFirstVisiblePosition() != 0 && alarmListView.getLastVisiblePosition() != alarmArrayList.size() - 1) {
-                    upImage.setVisibility(View.VISIBLE);
-                    downImage.setVisibility(View.VISIBLE);
-                }
-                if (alarmListView.getFirstVisiblePosition() != 0 && alarmListView.getLastVisiblePosition() == alarmArrayList.size() - 1) {
-                    upImage.setVisibility(View.VISIBLE);
-                    downImage.setVisibility(View.INVISIBLE);
-                }
+//                if (alarmListView.getFirstVisiblePosition() == 0 && alarmListView.getLastVisiblePosition() == alarmArrayList.size() - 1) {
+//                    upImage.setVisibility(View.INVISIBLE);
+//                    downImage.setVisibility(View.INVISIBLE);
+//                }
+//                if (alarmListView.getFirstVisiblePosition() == 0 && alarmListView.getLastVisiblePosition() != alarmArrayList.size() - 1) {
+//                    upImage.setVisibility(View.INVISIBLE);
+//                    downImage.setVisibility(View.VISIBLE);
+//                }
+//                if (alarmListView.getFirstVisiblePosition() != 0 && alarmListView.getLastVisiblePosition() != alarmArrayList.size() - 1) {
+//                    upImage.setVisibility(View.VISIBLE);
+//                    downImage.setVisibility(View.VISIBLE);
+//                }
+//                if (alarmListView.getFirstVisiblePosition() != 0 && alarmListView.getLastVisiblePosition() == alarmArrayList.size() - 1) {
+//                    upImage.setVisibility(View.VISIBLE);
+//                    downImage.setVisibility(View.INVISIBLE);
+//                }
 
             }
 
