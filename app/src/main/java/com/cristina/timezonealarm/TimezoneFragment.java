@@ -50,8 +50,8 @@ import java.util.concurrent.TimeUnit;
 
 
 public class TimezoneFragment extends Fragment implements
-       AnalogClock.AnalogClockListener,
-        LoaderManager.LoaderCallbacks<Cursor>
+       AnalogClock.AnalogClockListener
+
       {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -392,27 +392,15 @@ public class TimezoneFragment extends Fragment implements
 
         }
 
+//          @Override
+//          public void onPause()
+//          {
+//              super.onPause();
+//              getActivity().unregisterReceiver(mIntentReceiver);
+//          }
 
 
 
-          @Override
-          public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-              String[] projection = {AlarmsTable.COLUMN_ID, AlarmsTable.COLUMN_TITLE};
-              CursorLoader cursorLoader = new CursorLoader(getActivity().getApplicationContext(),
-                      AlarmsProvider.CONTENT_URI, projection, null, null, null);
-              return cursorLoader;
-          }
-
-          @Override
-          public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-              //adapter.swapCursor(data);
-          }
-
-          @Override
-          public void onLoaderReset(Loader<Cursor> loader) {
-              // data is not available anymore, delete reference
-             // adapter.swapCursor(null);
-          }
 
 
 }
