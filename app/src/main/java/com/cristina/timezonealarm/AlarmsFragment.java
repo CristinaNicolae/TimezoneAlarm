@@ -43,7 +43,6 @@ import android.widget.ToggleButton;
 import com.cristina.timezonealarm.custom.Alarm;
 import com.cristina.timezonealarm.data.AlarmsProvider;
 import com.cristina.timezonealarm.data.AlarmsTable;
-import com.cristina.timezonealarm.swipelistview.SwipeDismissListViewTouchListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -193,14 +192,14 @@ public class AlarmsFragment extends Fragment implements
 
 
                         alarmUri = getActivity().getContentResolver().insert(AlarmsProvider.CONTENT_URI, values);
-                        String id = alarmUri.toString().split("/")[1];
+                        int id = Integer.valueOf(alarmUri.toString().split("/")[1]);
 
 
                         Intent intent2 = new Intent(getActivity(), MyBroadcastReceiver.class);
                         intent2.putExtra("timezone", intent.getStringExtra("timezone"));
                         intent2.putExtra("title", alarm.title);
                         intent2.putExtra("alarm_time", alarm.numberOfHours + ":" + alarm.numberOfMinutes);
-                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT);
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(),id, intent2, 0);
 
 
                         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
