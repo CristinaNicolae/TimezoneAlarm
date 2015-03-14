@@ -5,6 +5,7 @@ package com.cristina.timezonealarm;
  */
 
 import android.app.AlarmManager;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
@@ -37,7 +38,6 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.cristina.timezonealarm.custom.Alarm;
-import com.cristina.timezonealarm.custom.AlarmsListViewAdapter;
 import com.cristina.timezonealarm.data.AlarmsProvider;
 import com.cristina.timezonealarm.data.AlarmsTable;
 import com.cristina.timezonealarm.swipelistview.SwipeDismissListViewTouchListener;
@@ -57,12 +57,14 @@ public class AlarmsFragment extends Fragment implements
     PointF touchPoint;
     TextView time;
 
+
+    String timezone;
     Alarm alarm;
     Button addNewAlarm;
     Button setAlarm;
     boolean isTouchable = false;
     ListView alarmListView;
-    AlarmsListViewAdapter listViewAdapter;
+    //AlarmsListViewAdapter listViewAdapter;
     ArrayList<Alarm> alarmArrayList = new ArrayList<Alarm>();
     ImageView upImage;
     ImageView downImage;
@@ -91,17 +93,18 @@ public class AlarmsFragment extends Fragment implements
         setAlarm = (Button) rootView.findViewById(R.id.setAlarm);
         alarmListView = (ListView) rootView.findViewById(R.id.alarmListView);
 
-        String[] from = new String[] { AlarmsTable.COLUMN_TITLE };
+        String[] from = new String[]{AlarmsTable.COLUMN_TITLE, AlarmsTable.COLUMN_HOUR, AlarmsTable.COLUMN_MINUTE, AlarmsTable.COLUMN_TIMEOFDAY};
         // Fields on the UI to which we map
-        int[] to = new int[] { R.id.titleTextView };
+        int[] to = new int[]{R.id.titleTextView, R.id.hour, R.id.minute, R.id.timeOfDay};
 
-//        getLoaderManager().initLoader(0, null,this);
+        getLoaderManager().initLoader(0, null, this);
         Intent intent = getActivity().getIntent();
-        fillData(intent.getStringExtra("timezone"));
-//        adapter = new SimpleCursorAdapter(getActivity(), R.layout.alarm_list_view_item, null, from,
-//                to, 0);
-//
-//        alarmListView.setAdapter(adapter);
+//        fillData(intent.getStringExtra("timezone"));
+        timezone = intent.getStringExtra("timezone");
+        adapter = new SimpleCursorAdapter(getActivity(), R.layout.alarm_list_view_item, null, from,
+                to, 0);
+
+        alarmListView.setAdapter(adapter);
 
         SwipeDismissListViewTouchListener touchListener =
                 new SwipeDismissListViewTouchListener(
@@ -116,9 +119,9 @@ public class AlarmsFragment extends Fragment implements
                             @Override
                             public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                                 for (int position : reverseSortedPositions) {
-                                    listViewAdapter.remove(position);
+                                    // listViewAdapter.remove(position);
                                 }
-                                listViewAdapter.notifyDataSetChanged();
+                                // listViewAdapter.notifyDataSetChanged();
                                 if (alarmArrayList.size() == 3)
                                     downImage.setVisibility(View.VISIBLE);
                                 else downImage.setVisibility(View.INVISIBLE);
@@ -130,110 +133,197 @@ public class AlarmsFragment extends Fragment implements
 
 
         Resources res = getResources();
-        listViewAdapter = new AlarmsListViewAdapter(getActivity(), alarmArrayList, res, R.layout.alarm_list_view_item);
-        alarmListView.setAdapter(listViewAdapter);
+        // listViewAdapter = new AlarmsListViewAdapter(getActivity(), alarmArrayList, res, R.layout.alarm_list_view_item);
+        //alarmListView.setAdapter(listViewAdapter);
         upImage = (ImageView) rootView.findViewById(R.id.upImage);
         downImage = (ImageView) rootView.findViewById(R.id.downImage);
 
-        setAlarm.setOnClickListener(new View.OnClickListener() {
-            EditText editText;
-            TextView titleTextView;
-            ToggleButton toggleButton;
-            InputMethodManager imm;
+//        setAlarm.setOnClickListener(new View.OnClickListener() {
+//            EditText editText;
+//            TextView titleTextView;
+//            ToggleButton toggleButton;
+//            InputMethodManager imm;
+//
+//            @Override
+//            public void onClick(View v) {
+//                //listViewAdapter.addElement(alarm);
+//                //listViewAdapter.notifyDataSetChanged();
+//                if (alarmArrayList.size() == 4)
+//                    downImage.setVisibility(View.VISIBLE);
+//                else downImage.setVisibility(View.INVISIBLE);
+//                alarmListView.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        View rowView = alarmListView.getChildAt(0);
+//                        editText = (EditText) rowView.findViewById(R.id.title);
+//                        titleTextView = (TextView) rowView.findViewById(R.id.titleTextView);
+//                        toggleButton = (ToggleButton) rowView.findViewById(R.id.activeAlarm);
+//
+//
+//                        editText.setVisibility(View.VISIBLE);
+//                        editText.requestFocus();
+//
+//                        imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//                        imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+//                        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//                            @Override
+//                            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+//                                if (actionId == EditorInfo.IME_ACTION_DONE) {
+//
+//                                    alarm.title = editText.getText().toString();
+//                                    alarm.active = 1;
+//                                    editText.setVisibility(View.GONE);
+//                                    imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+//                                    titleTextView.setText(alarm.title);
+//                                    //listViewAdapter.updateElement(alarm);
+//                                    toggleButton.setChecked(true);
+//
+//
+//                                    Intent intent = getActivity().getIntent();
+//
+//                                    ContentValues values = new ContentValues();
+//                                    values.put(AlarmsTable.COLUMN_HOUR, alarm.numberOfHours);
+//                                    values.put(AlarmsTable.COLUMN_MINUTE, alarm.numberOfMinutes);
+//                                    values.put(AlarmsTable.COLUMN_ANGLE, alarm.angle);
+//                                    values.put(AlarmsTable.COLUMN_TIMEOFDAY, alarm.timeOfDay);
+//                                    values.put(AlarmsTable.COLUMN_TITLE, alarm.title);
+//                                    values.put(AlarmsTable.COLUMN_ACTIVE, alarm.active);
+//                                    values.put(AlarmsTable.COLUMN_TIMEZONEID, intent.getStringExtra("timezone"));
+//
+//
+//                                   alarmUri = getActivity().getContentResolver().insert(AlarmsProvider.CONTENT_URI, values);
+//
+//
+//                                    Intent intent2 = new Intent(getActivity(), MyBroadcastReceiver.class);
+//                                    intent2.putExtra("timezone", intent.getStringExtra("timezone"));
+//                                    intent2.putExtra("title", alarm.title);
+//                                    intent2.putExtra("alarm_time", alarm.numberOfHours+":"+alarm.numberOfMinutes);
+//                                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, intent2,PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//
+//                                    AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+//
+//                                    Calendar calendar = Calendar.getInstance();
+//                                    calendar.setTimeInMillis(System.currentTimeMillis());
+//                                    if(alarm.timeOfDay==1)
+//                                    calendar.set(Calendar.HOUR_OF_DAY, alarm.numberOfHours+12);
+//                                    else
+//                                    calendar.set(Calendar.HOUR_OF_DAY, alarm.numberOfHours);
+//
+//
+//                                    calendar.set(Calendar.MINUTE, alarm.numberOfMinutes-1);
+//
+//                                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+//                                            AlarmManager.INTERVAL_DAY, pendingIntent);
+//
+//
+//                                    return true;
+//                                }
+//                                return false;
+//                            }
+//                        });
+//
+//
+//                    }
+//                });
+//
+//
+//                needle.setVisibility(View.INVISIBLE);
+//                isTouchable = false;
+//                addNewAlarm.setVisibility(View.VISIBLE);
+//                if (alarmArrayList.size() >= 5) {
+//                    addNewAlarm.setEnabled(false);
+//                    addNewAlarm.setTextColor(Color.DKGRAY);
+//                } else {
+//                    addNewAlarm.setEnabled(true);
+//                    addNewAlarm.setTextColor(getActivity().getApplicationContext().getResources().getColor(R.color.ThemeYellow));
+//                }
+//                setAlarm.setVisibility(View.INVISIBLE);
+//                time.setVisibility(View.INVISIBLE);
+//
+//            }
+//        });
 
+        setAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listViewAdapter.addElement(alarm);
-                listViewAdapter.notifyDataSetChanged();
-                if (alarmArrayList.size() == 4)
-                    downImage.setVisibility(View.VISIBLE);
-                else downImage.setVisibility(View.INVISIBLE);
-                alarmListView.post(new Runnable() {
+                // Create custom dialog object
+                final Dialog dialog = new Dialog(getActivity());
+                // Include dialog.xml file
+                dialog.setContentView(R.layout.custom_dialog);
+                // Set dialog title
+                dialog.setTitle("NEW ALARM");
+
+                // set values for custom dialog components - text, image and button
+                final EditText editText = (EditText) dialog.findViewById(R.id.titleET);
+                Button yesButton = (Button) dialog.findViewById(R.id.buttonYES);
+                Button noButton = (Button) dialog.findViewById(R.id.buttonNO);
+
+                dialog.show();
+
+                yesButton.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void run() {
-                        View rowView = alarmListView.getChildAt(0);
-                        editText = (EditText) rowView.findViewById(R.id.title);
-                        titleTextView = (TextView) rowView.findViewById(R.id.titleTextView);
-                        toggleButton = (ToggleButton) rowView.findViewById(R.id.activeAlarm);
+                    public void onClick(View v) {
+
+                        Intent intent = getActivity().getIntent();
+
+                        alarm.title = String.valueOf(editText.getText());
+
+                        ContentValues values = new ContentValues();
+                        values.put(AlarmsTable.COLUMN_HOUR, String.format("%02d", alarm.numberOfHours));
+                        values.put(AlarmsTable.COLUMN_MINUTE, String.format("%02d", alarm.numberOfMinutes));
+                        values.put(AlarmsTable.COLUMN_ANGLE, alarm.angle);
+
+                        String ampm;
+                        if (alarm.timeOfDay == 1)
+                            ampm ="PM";
+                        else
+                            ampm = "AM";
 
 
-                        editText.setVisibility(View.VISIBLE);
-                        editText.requestFocus();
-
-                        imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
-                        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                            @Override
-                            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                                if (actionId == EditorInfo.IME_ACTION_DONE) {
-
-                                    alarm.title = editText.getText().toString();
-                                    alarm.active = 1;
-                                    editText.setVisibility(View.GONE);
-                                    imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
-                                    titleTextView.setText(alarm.title);
-                                    listViewAdapter.updateElement(alarm);
-                                    toggleButton.setChecked(true);
-
-                                    Intent intent = getActivity().getIntent();
-
-                                    ContentValues values = new ContentValues();
-                                    values.put(AlarmsTable.COLUMN_HOUR, alarm.numberOfHours);
-                                    values.put(AlarmsTable.COLUMN_MINUTE, alarm.numberOfMinutes);
-                                    values.put(AlarmsTable.COLUMN_ANGLE, alarm.angle);
-                                    values.put(AlarmsTable.COLUMN_TIMEOFDAY, alarm.timeOfDay);
-                                    values.put(AlarmsTable.COLUMN_TITLE, alarm.title);
-                                    values.put(AlarmsTable.COLUMN_ACTIVE, alarm.active);
-                                    values.put(AlarmsTable.COLUMN_TIMEZONEID, intent.getStringExtra("timezone"));
+                        values.put(AlarmsTable.COLUMN_TIMEOFDAY, ampm);
+                        values.put(AlarmsTable.COLUMN_TITLE, alarm.title);
+                        values.put(AlarmsTable.COLUMN_ACTIVE, alarm.active);
+                        values.put(AlarmsTable.COLUMN_TIMEZONEID, intent.getStringExtra("timezone"));
 
 
-//                                    alarmUri = getActivity().getContentResolver().insert(AlarmsProvider.CONTENT_URI, values);
-//
-//
-//                                    Bundle extras = getActivity().getIntent().getExtras();
-//                                    Uri todoUri = Uri.parse(AlarmsProvider.CONTENT_URI + "/1");
-//
-//
-//
-//                                    try {
-//                                        fillData(todoUri);
-//                                    } catch (Exception e) {
-//                                        e.printStackTrace();
-//                                    }
-
-                                    Intent intent2 = new Intent(getActivity(), MyBroadcastReceiver.class);
-                                    intent2.putExtra("timezone", intent.getStringExtra("timezone"));
-                                    intent2.putExtra("title", alarm.title);
-                                    intent2.putExtra("alarm_time", alarm.numberOfHours+":"+alarm.numberOfMinutes);
-                                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, intent2,PendingIntent.FLAG_UPDATE_CURRENT);
+                        alarmUri = getActivity().getContentResolver().insert(AlarmsProvider.CONTENT_URI, values);
 
 
-                                    AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-
-                                    Calendar calendar = Calendar.getInstance();
-                                    calendar.setTimeInMillis(System.currentTimeMillis());
-                                    if(alarm.timeOfDay==1)
-                                    calendar.set(Calendar.HOUR_OF_DAY, alarm.numberOfHours+12);
-                                    else
-                                    calendar.set(Calendar.HOUR_OF_DAY, alarm.numberOfHours);
+                        Intent intent2 = new Intent(getActivity(), MyBroadcastReceiver.class);
+                        intent2.putExtra("timezone", intent.getStringExtra("timezone"));
+                        intent2.putExtra("title", alarm.title);
+                        intent2.putExtra("alarm_time", alarm.numberOfHours + ":" + alarm.numberOfMinutes);
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
-                                    calendar.set(Calendar.MINUTE, alarm.numberOfMinutes-1);
+                        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
 
-                                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                                            AlarmManager.INTERVAL_DAY, pendingIntent);
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTimeInMillis(System.currentTimeMillis());
+                        if (alarm.timeOfDay == 1)
+                            calendar.set(Calendar.HOUR_OF_DAY, alarm.numberOfHours + 12);
+                        else
+                            calendar.set(Calendar.HOUR_OF_DAY, alarm.numberOfHours);
 
 
-                                    return true;
-                                }
-                                return false;
-                            }
-                        });
+                        calendar.set(Calendar.MINUTE, alarm.numberOfMinutes - 1);
+                        calendar.set(Calendar.SECOND, 0);
 
+                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                                AlarmManager.INTERVAL_DAY, pendingIntent);
+
+                        dialog.dismiss();
 
                     }
                 });
 
+                noButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
 
                 needle.setVisibility(View.INVISIBLE);
                 isTouchable = false;
@@ -249,6 +339,7 @@ public class AlarmsFragment extends Fragment implements
                 time.setVisibility(View.INVISIBLE);
 
             }
+
         });
 
         addNewAlarm.setOnClickListener(new View.OnClickListener() {
@@ -381,9 +472,16 @@ public class AlarmsFragment extends Fragment implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] projection = {AlarmsTable.COLUMN_ID, AlarmsTable.COLUMN_TITLE};
+        String[] projection = {AlarmsTable.COLUMN_ID, AlarmsTable.COLUMN_TITLE, AlarmsTable.COLUMN_HOUR, AlarmsTable.COLUMN_MINUTE, AlarmsTable.COLUMN_TIMEOFDAY};
+        Intent intent = getActivity().getIntent();
         CursorLoader cursorLoader = new CursorLoader(getActivity().getApplicationContext(),
-                AlarmsProvider.CONTENT_URI, projection, null, null, null);
+                AlarmsProvider.CONTENT_URI, projection, AlarmsTable.COLUMN_TIMEZONEID + "= ?", new String[]{intent.getStringExtra("timezone")}, null);
+//
+//        String[] projection = {AlarmsTable.COLUMN_TITLE, AlarmsTable.COLUMN_HOUR, AlarmsTable.COLUMN_MINUTE};
+////        Cursor cursor = getActivity().getContentResolver().query(uri, projection, null, null,
+////                null);
+//        CursorLoader cursor = new CursorLoader(getActivity(), AlarmsProvider.CONTENT_URI, projection, AlarmsTable.COLUMN_TIMEZONEID + "= ?", new String[]{timezone}, null );
+
         return cursorLoader;
     }
 
@@ -404,12 +502,14 @@ public class AlarmsFragment extends Fragment implements
         String[] projection = {AlarmsTable.COLUMN_TITLE, AlarmsTable.COLUMN_HOUR, AlarmsTable.COLUMN_MINUTE};
 //        Cursor cursor = getActivity().getContentResolver().query(uri, projection, null, null,
 //                null);
-        Cursor cursor = new CursorLoader(getActivity(), AlarmsProvider.CONTENT_URI, projection, AlarmsTable.COLUMN_TIMEZONEID + "= ?", new String[]{timezone}, null ).loadInBackground();
-        if (cursor != null) {
-            cursor.moveToFirst();
+        Cursor cursor = new CursorLoader(getActivity(), AlarmsProvider.CONTENT_URI, projection, AlarmsTable.COLUMN_TIMEZONEID + "= ?", new String[]{timezone}, null).loadInBackground();
+        if (cursor != null && cursor.moveToFirst()) {
+            //cursor.moveToFirst();
             String category = cursor.getString(cursor
                     .getColumnIndexOrThrow(AlarmsTable.COLUMN_TITLE));
-//            String title = cursor.getColumn(AlarmsTable.COLUMN_TITLE);
+
+
+            String title = cursor.getString(1);
 
             // always close the cursor
             cursor.close();

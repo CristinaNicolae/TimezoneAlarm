@@ -11,62 +11,78 @@
    >
 
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/front"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="@android:color/black"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:tag="front">
 
-        <TextView
-            android:id="@+id/hour"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_gravity="center"
-            android:layout_centerInParent="true"
-            android:gravity="center_vertical"
-            android:textColor="#CCB69B" />
 
-        <EditText
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            android:background="@android:color/transparent"
-            android:layout_gravity="center"
-            android:imeOptions="actionDone"
-            android:inputType="text"
-            android:maxLines="1"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:text="NEW ALARM"
-            android:textColor="#CCB69B"
-            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/hour"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+
+                android:layout_gravity="center"
+
+                android:gravity="center_vertical"
+                android:textColor="#CCB69B"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:text=":"
+                android:gravity="center_vertical"
+                android:textColor="#CCB69B"
+                />
+
+            <TextView
+                android:id="@+id/minute"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center_vertical"
+                android:textColor="#CCB69B"
+                />
+
+
+            <TextView
+                android:id="@+id/timeOfDay"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="3dp"
+                android:textColor="#CCB69B"
+                />
+
+
+
+
+
+            </LinearLayout>
+
 
         <TextView
             android:id="@+id/titleTextView"
-            android:layout_width="fill_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_centerInParent="true"
+            android:layout_weight="7"
             android:layout_gravity="center"
             android:background="@android:color/transparent"
             android:gravity="center"
             android:textColor="#CCB69B" />
 
-        <ToggleButton
-            android:id="@+id/activeAlarm"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:background="@layout/check"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:textOff=""
-            android:textOn="" />
-
-    </RelativeLayout>
+    </LinearLayout>
 </RelativeLayout>
