@@ -12,35 +12,31 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.KeyEvent;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.cristina.timezonealarm.custom.Alarm;
+import com.cristina.timezonealarm.custom.PendingIntents;
 import com.cristina.timezonealarm.data.AlarmsProvider;
 import com.cristina.timezonealarm.data.AlarmsTable;
 
@@ -66,17 +62,12 @@ public class AlarmsFragment extends Fragment implements
     Button setAlarm;
     boolean isTouchable = false;
     ListView alarmListView;
-    //AlarmsListViewAdapter listViewAdapter;
     ArrayList<Alarm> alarmArrayList = new ArrayList<Alarm>();
     ImageView upImage;
     ImageView downImage;
-    ImageView timeZoneImage;
     Uri alarmUri;
     private SimpleCursorAdapter adapter;
-    ArrayList<String> alarmIDs = new ArrayList<String>();
-
-
-    private ArrayAdapter<String> _adapter;
+    ArrayList<PendingIntents> piArray = new ArrayList<PendingIntents>();
 
 
     @Override
@@ -135,17 +126,12 @@ public class AlarmsFragment extends Fragment implements
             public boolean onItemLongClick(AdapterView<?> parent, final View view, int position, long id) {
 
 
-                    removeDialog(view);
+                removeDialog(view);
 
                 return false;
             }
         });
 
-
-
-        Resources res = getResources();
-        // listViewAdapter = new AlarmsListViewAdapter(getActivity(), alarmArrayList, res, R.layout.alarm_list_view_item);
-        //alarmListView.setAdapter(listViewAdapter);
         upImage = (ImageView) rootView.findViewById(R.id.upImage);
         downImage = (ImageView) rootView.findViewById(R.id.downImage);
         setAlarm.setOnClickListener(new View.OnClickListener() {
@@ -175,31 +161,31 @@ public class AlarmsFragment extends Fragment implements
 
                         ContentValues values = new ContentValues();
                         values.put(AlarmsTable.COLUMN_HOUR, alarm.numberOfHours);
-                        values.put(AlarmsTable.COLUMN_MINUTE,alarm.numberOfMinutes);
+                        values.put(AlarmsTable.COLUMN_MINUTE, alarm.numberOfMinutes);
                         values.put(AlarmsTable.COLUMN_ANGLE, alarm.angle);
 
                         String ampm;
                         if (alarm.timeOfDay == 1)
-                            ampm ="PM";
+                            ampm = "PM";
                         else
                             ampm = "AM";
-
 
                         values.put(AlarmsTable.COLUMN_TIMEOFDAY, ampm);
                         values.put(AlarmsTable.COLUMN_TITLE, alarm.title);
                         values.put(AlarmsTable.COLUMN_ACTIVE, alarm.active);
                         values.put(AlarmsTable.COLUMN_TIMEZONEID, intent.getStringExtra("timezone"));
 
-
                         alarmUri = getActivity().getContentResolver().insert(AlarmsProvider.CONTENT_URI, values);
                         int id = Integer.valueOf(alarmUri.toString().split("/")[1]);
-
 
                         Intent intent2 = new Intent(getActivity(), MyBroadcastReceiver.class);
                         intent2.putExtra("timezone", intent.getStringExtra("timezone"));
                         intent2.putExtra("title", alarm.title);
-                        intent2.putExtra("alarm_time", alarm.numberOfHours + ":" + alarm.numberOfMinutes);
-                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(),id, intent2, 0);
+                        intent2.putExtra("alarm_time", String.format("%02d", alarm.numberOfHours) + ":" + String.format("%02d", alarm.numberOfMinutes));
+                        intent2.putExtra("id", id);
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), id, intent2, 0);
+
+                        piArray.add(new PendingIntents(id, pendingIntent));
 
 
                         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
@@ -219,6 +205,7 @@ public class AlarmsFragment extends Fragment implements
                                 AlarmManager.INTERVAL_DAY, pendingIntent);
 
                         dialog.dismiss();
+
 
                     }
                 });
@@ -397,8 +384,7 @@ public class AlarmsFragment extends Fragment implements
     }
 
 
-    public void removeDialog(final View view)
-    {
+    public void removeDialog(final View view) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         alertDialogBuilder.setMessage("Delete alarm?");
         alertDialogBuilder.setPositiveButton("Delete",
@@ -411,6 +397,14 @@ public class AlarmsFragment extends Fragment implements
                         Uri uri = Uri.parse(AlarmsProvider.CONTENT_URI + "/"
                                 + textView.getText());
                         getActivity().getContentResolver().delete(uri, null, null);
+
+                        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+                        for (int i = 0; i < piArray.size(); i++) {
+                            if (piArray.get(i).id == Integer.valueOf(textView.getText().toString())) {
+                                alarmManager.cancel(piArray.get(i).pendingIntent);
+                            }
+
+                        }
 
 
                     }
