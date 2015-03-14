@@ -172,6 +172,7 @@ public class AlarmsFragment extends Fragment implements
 
                         values.put(AlarmsTable.COLUMN_TIMEOFDAY, ampm);
                         values.put(AlarmsTable.COLUMN_TITLE, alarm.title);
+                        values.put(AlarmsTable.COLUMN_ACTIVE, alarm.active);
                         values.put(AlarmsTable.COLUMN_TIMEZONEID, intent.getStringExtra("timezone"));
 
                         alarmUri = getActivity().getContentResolver().insert(AlarmsProvider.CONTENT_URI, values);
@@ -242,7 +243,7 @@ public class AlarmsFragment extends Fragment implements
                 needle.setPivotX(back.getWidth() / 2);
                 needle.setPivotY(back.getHeight() / 2);
                 needle.setRotation(0);
-                alarm = new Alarm(12, 0, 0, -1, "");
+                alarm = new Alarm(12, 0, 0, -1, "", 0);
                 time.setText(String.format("%02d", alarm.numberOfHours) + ":" + String.format("%02d", alarm.numberOfMinutes) + "  PM");
                 isTouchable = true;
                 addNewAlarm.setVisibility(View.INVISIBLE);
