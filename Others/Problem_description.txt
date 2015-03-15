@@ -1,6 +1,13 @@
 I was in an internship at a firm where the clients were from other countries. 
 We always had this problem: they usually told us: "We will have a call at 9pm (my time)". 
-We spend about a minute to see what time will be in our country. 
+We spent about a minute to see what time will be in our country. 
 
-Timezonealarm allows you add two different timezones for which you can add alarms. 
-They will go off when the hour is that timezone matches with the one on your phone. 
+Timezonealarm allows you to add two different timezones for which you can add alarms. 
+They will go off when the hour in that timezone matches with the one on your phone. 
+
+
+When you enter the app you have two preselected timezones. 
+You can change them from settings.
+For each timezone you can add multiple alarms by rotating the needle to the desired time.
+You can remove an alarm by long pressing on it. 
+
