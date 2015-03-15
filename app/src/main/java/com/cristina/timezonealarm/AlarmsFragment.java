@@ -22,6 +22,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -208,24 +209,27 @@ public class AlarmsFragment extends Fragment implements
 
                         Calendar calendar = Calendar.getInstance();
                         Calendar now = Calendar.getInstance();
-                        calendar.setTimeInMillis(System.currentTimeMillis());
+
+                        //calendar.setTimeInMillis(System.currentTimeMillis());
                         int gmt = Integer.valueOf(intent.getStringExtra("gmt"));
                         if (alarm.timeOfDay == 1)
-                            calendar.set(Calendar.HOUR_OF_DAY, alarm.numberOfHours + 12 + gmt);
+                            calendar.set(Calendar.HOUR_OF_DAY, alarm.numberOfHours + 12 - gmt);
                         else
-                            calendar.set(Calendar.HOUR_OF_DAY, alarm.numberOfHours + gmt );
+                            calendar.set(Calendar.HOUR_OF_DAY, alarm.numberOfHours - gmt );
 
-                        long _alarm;
-                        if(calendar.getTimeInMillis() <= now.getTimeInMillis())
-                            _alarm = calendar.getTimeInMillis() + (AlarmManager.INTERVAL_DAY+1);
-                        else
-                            _alarm = calendar.getTimeInMillis();
-
-
-                        calendar.set(Calendar.MINUTE, alarm.numberOfMinutes - 1);
+                        calendar.set(Calendar.MINUTE, alarm.numberOfMinutes - 2);
                         calendar.set(Calendar.SECOND, 0);
 
-                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, _alarm,
+                        Log.d("Minutes:", String.valueOf(calendar.get(Calendar.MINUTE)));
+                        Log.d("Hours:", String.valueOf(calendar.get(Calendar.HOUR)));
+
+//                        long _alarm;
+//                        if(calendar.getTimeInMillis() <= now.getTimeInMillis())
+//                            _alarm = calendar.getTimeInMillis() + (AlarmManager.INTERVAL_DAY);
+//                        else
+//                            _alarm = calendar.getTimeInMillis();
+
+                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),
                                 AlarmManager.INTERVAL_DAY, pendingIntent);
 
                         dialog.dismiss();
@@ -353,25 +357,7 @@ public class AlarmsFragment extends Fragment implements
         alarmListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-//                Log.d("first visible", String.valueOf(alarmListView.getFirstVisiblePosition()));
-//                Log.d("last visible", String.valueOf(alarmListView.getLastVisiblePosition()));
-//                Log.d("size", String.valueOf(alarmArrayList.size()-1));
-//                if (alarmListView.getFirstVisiblePosition() == 0 && alarmListView.getLastVisiblePosition() == alarmArrayList.size() - 1) {
-//                    upImage.setVisibility(View.INVISIBLE);
-//                    downImage.setVisibility(View.INVISIBLE);
-//                }
-//                if (alarmListView.getFirstVisiblePosition() == 0 && alarmListView.getLastVisiblePosition() != alarmArrayList.size() - 1) {
-//                    upImage.setVisibility(View.INVISIBLE);
-//                    downImage.setVisibility(View.VISIBLE);
-//                }
-//                if (alarmListView.getFirstVisiblePosition() != 0 && alarmListView.getLastVisiblePosition() != alarmArrayList.size() - 1) {
-//                    upImage.setVisibility(View.VISIBLE);
-//                    downImage.setVisibility(View.VISIBLE);
-//                }
-//                if (alarmListView.getFirstVisiblePosition() != 0 && alarmListView.getLastVisiblePosition() == alarmArrayList.size() - 1) {
-//                    upImage.setVisibility(View.VISIBLE);
-//                    downImage.setVisibility(View.INVISIBLE);
-//                }
+
 
             }
 
