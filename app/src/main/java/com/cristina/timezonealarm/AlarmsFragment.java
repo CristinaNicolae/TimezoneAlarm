@@ -92,6 +92,8 @@ public class AlarmsFragment extends Fragment implements
         checkFirstRun();
         View rootView = inflater.inflate(R.layout.fragment_alarms, container, false);
 
+       final Intent intent = getActivity().getIntent();
+        getActivity().setTitle(intent.getStringExtra("timezone") + " Alarms");
 
 
 
@@ -111,7 +113,7 @@ public class AlarmsFragment extends Fragment implements
         int[] to = new int[]{R.id.alarmID, R.id.titleTextView, R.id.hour, R.id.minute, R.id.timeOfDay};
 
         getLoaderManager().initLoader(0, null, this);
-        Intent intent = getActivity().getIntent();
+
         timezone = intent.getStringExtra("timezone");
         adapter = new SimpleCursorAdapter(getActivity(), R.layout.alarm_list_view_item, null, from,
                 to, 0);
@@ -172,7 +174,7 @@ public class AlarmsFragment extends Fragment implements
                     @Override
                     public void onClick(View v) {
 
-                        Intent intent = getActivity().getIntent();
+
 
                         alarm.title = String.valueOf(editText.getText());
 
