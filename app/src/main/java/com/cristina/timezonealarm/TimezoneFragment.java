@@ -360,7 +360,7 @@ public class TimezoneFragment extends Fragment implements
        Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, "I am using TimezoneAlarm. I set " + tz1 + " and " + tz2 + " to add alarms! You should check it!");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "I am using TimezoneAlarm. I set " + tz1 + " and " + tz2 + " to add alarms! You should check it! https://plus.google.com/+CristinaNicolae/posts/erjLJKMiury " + "#TimezoneAlarm");
         return shareIntent;
     }
 
